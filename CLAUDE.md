@@ -7,9 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a collection of Spring AI examples demonstrating various AI integration patterns and use cases. The repository is organized as a multi-module Maven project with examples covering:
 
 - **Agentic Patterns**: Chain workflows, orchestrator-workers, parallelization, routing, and evaluator-optimizer patterns
-- **Model Context Protocol (MCP)**: Extensive examples for MCP clients and servers including SQLite, filesystem, weather, web search, and annotations
-- **Kotlin Examples**: Hello world, function callbacks, and RAG implementations in Kotlin
-- **Miscellaneous**: Function callbacks, streaming responses, and prompt engineering patterns
+- **Model Context Protocol (MCP)**: Extensive examples for MCP clients and servers including SQLite, filesystem, weather, web search, sampling, and annotations
+- **Advisors**: Recursive advisors, tool argument augmenters, and evaluation patterns for ChatClient customization
+- **Prompt Engineering**: Advanced prompt patterns and techniques
+- **Kotlin Examples**: Hello world, function callbacks, and RAG implementations (currently disabled in root pom.xml)
+- **Miscellaneous**: Function callbacks, streaming responses, and Claude Skills demos
 
 ## Build System and Commands
 
@@ -22,12 +24,6 @@ This project uses Maven with the Maven Wrapper (mvnw). Each module can be built 
 ./mvnw clean package
 ```
 
-**Run a specific example:**
-```bash
-./run-example.sh <project-directory-name>
-# Example: ./run-example.sh agentic-patterns/chain-workflow
-```
-
 **Build and run individual module:**
 ```bash
 cd <module-directory>
@@ -38,6 +34,17 @@ cd <module-directory>
 **Build from root (all modules):**
 ```bash
 mvn clean package
+```
+
+**Run single test:**
+```bash
+cd <module-directory>
+./mvnw test
+```
+
+**Run integration test for specific module:**
+```bash
+./integration-testing/scripts/run-integration-tests.sh <module-name>
 ```
 
 ### Version Management
@@ -74,18 +81,31 @@ The version management script handles two patterns:
 ### Key Module Categories
 
 **Agentic Patterns (`agentic-patterns/`):**
-- Demonstrates AI agent workflow patterns
+- Multi-module Maven project (chain-workflow, orchestrator-workers, parallelization-workflow, routing-workflow, evaluator-optimizer)
+- Demonstrates AI agent workflow patterns based on Anthropic's research
 - Each pattern is a separate module with its own Application class
 
 **Model Context Protocol (`model-context-protocol/`):**
 - MCP client and server implementations
-- Covers various protocols: SQLite, filesystem access, weather APIs, web search
+- Covers various protocols: SQLite, filesystem access, weather APIs, web search, sampling, annotations
 - Includes both manual and starter-based implementations
 - Server types: WebMVC, WebFlux, and STDIO
+- Dynamic tool update examples for runtime tool modifications
+
+**Advisors (`advisors/`):**
+- recursive-advisor-demo: Demonstrates recursive advisor patterns
+- tool-argument-augmenter-demo: Tool argument augmentation examples
+- evaluation-recursive-advisor-demo: Evaluation with recursive advisors (requires Ollama Docker)
+
+**Prompt Engineering (`prompt-engineering/`):**
+- Advanced prompt patterns and techniques for ChatClient
+
+**Agents (`agents/`):**
+- reflection: Reflection-based agent patterns
 
 **Kotlin Examples (`kotlin/`):**
-- Kotlin-based Spring AI implementations
-- Includes RAG (Retrieval-Augmented Generation) examples
+- kotlin-hello-world, kotlin-function-callback, rag-with-kotlin
+- Currently disabled in root pom.xml (commented out)
 
 ### Configuration Patterns
 - Application properties typically in `src/main/resources/application.properties` or `application.yaml`
@@ -94,7 +114,7 @@ The version management script handles two patterns:
 
 ## Testing Framework
 
-This repository uses a comprehensive integration testing framework with **AI-powered validation** for ensuring all examples work correctly across releases. The framework currently covers **24 modules with integration tests** with intelligent validation for interactive applications.
+This repository uses a comprehensive integration testing framework with **AI-powered validation** for ensuring all examples work correctly across releases. The framework currently covers **31 modules with integration tests** with intelligent validation for interactive applications.
 
 ### Testing Approaches
 
@@ -105,7 +125,7 @@ This repository uses a comprehensive integration testing framework with **AI-pow
 
 ### Key Features
 
-- **24 Modules Tested**: Integration tests for all major example categories
+- **31 Modules Tested**: Integration tests for all major example categories
 - **AI Validation**: Intelligent analysis of application logs for non-deterministic outputs
 - **Interactive Application Support**: Testing of chatbots and Scanner-based applications
 - **Centralized Architecture**: Single source of truth with 84% code reduction
@@ -148,7 +168,7 @@ python3 integration-testing/scripts/scaffold_integration_test.py agentic-pattern
 python3 integration-testing/scripts/scaffold_integration_test.py agents/reflection --complexity complex
 
 # MCP example (hybrid validation)
-python3 integration-testing/scripts/scaffold_integration_test.py model-context-protocol/weather/server --complexity complex
+python3 integration-testing/scripts/scaffold_integration_test.py model-context-protocol/weather/starter-webmvc-server --complexity complex
 ```
 
 **Test specific example:**
@@ -230,6 +250,25 @@ For complete details, see `integration-testing/docs/AI_VALIDATION.md`.
 - Examples demonstrate both OpenAI and other AI model integrations
 - MCP examples often include database setup scripts (e.g., `create-database.sh`)
 - Complex examples should include integration tests for CI/CD validation
+
+### CI/CD Manual Triggers
+
+Integration tests can be triggered manually via GitHub Actions:
+
+```bash
+# Run all tests
+gh workflow run integration-tests.yml
+
+# Run specific test group
+gh workflow run integration-tests.yml -f test_group=agentic
+
+# Run specific test by name
+gh workflow run integration-tests.yml -f test_filter=chain-workflow
+```
+
+**Test groups**: `mcp-servers`, `agentic`, `openai-2`, `openai-3`, `anthropic-multi`, `docker-tests`
+
+See `.github/workflows/integration-tests.yml` for complete test group definitions and requirements.
 
 ## Commit Message Guidelines
 
