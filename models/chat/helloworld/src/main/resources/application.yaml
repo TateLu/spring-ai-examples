@@ -1,4 +1,8 @@
 spring:
   ai:
     openai:
-      api-key: ${OPENAI_API_KEY}
+      api-key: ${DEEPSEEK_API_KEY}  # 你的 DeepSeek API Key
+      base-url: https://api.deepseek.com  # DeepSeek API 端点
+      chat:
+        options:
+          model: deepseek-chat  # 或者 deepseek-coder

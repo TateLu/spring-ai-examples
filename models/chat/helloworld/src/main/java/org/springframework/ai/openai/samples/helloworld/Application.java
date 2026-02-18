@@ -19,9 +19,9 @@ public class Application {
         return args -> {
             var chat = builder.build();
             System.out.println("\nSpring AI Hello World!");
-            System.out.println("USER: Tell me a joke");
+            System.out.println("USER: 给我讲个笑话");
             System.out.println("ASSISTANT: " + 
-                    chat.prompt("Tell me a joke").call().content());
+                    chat.prompt("给我讲个笑话").call().content());
             System.out.println("\nHello World demo completed!");
             context.close();
         };
