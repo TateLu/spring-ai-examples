@@ -1,61 +1,61 @@
-# Spring AI - Model Context Protocol (MCP) Brave Search Chatbot
+# Spring AI - 模型上下文协议（MCP）Brave 搜索聊天机器人
 
-This example demonstrates how to build an interactive chatbot that combines Spring AI's Model Context Protocol (MCP) with the [Brave Search MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search). The application creates a persistent chatbot that maintains conversation history using Spring AI's Memory Advisor, allowing for contextual interactions across multiple exchanges. Users can engage in an ongoing conversation with the bot, which can perform internet searches through Brave Search to provide up-to-date information. The chatbot runs continuously until terminated with Ctrl-C, maintaining conversational state throughout the session.
+此示例演示如何构建一个交互式聊天机器人，将 Spring AI 的模型上下文协议（MCP）与 [Brave 搜索 MCP 服务器](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search) 结合。该应用程序创建一个持久聊天机器人，使用 Spring AI 的内存顾问维护对话历史记录，实现跨多次交换的上下文交互。用户可以与机器人进行持续对话，该机器人可以通过 Brave 搜索执行互联网搜索，以提供最新信息。聊天机器人持续运行，直到使用 Ctrl-C 终止，并在整个会话期间维护对话状态。
 
-The application is powered by Anthropic's Claude AI model and can perform internet searches through Brave Search, enabling natural language interactions with real-time web data while maintaining context of the conversation.
+该应用程序由 Anthropic 的 Claude AI 模型驱动，可以通过 Brave 搜索执行互联网搜索，实现与实时 Web 数据的自然语言交互，同时维护对话上下文。
 
 <img src="spring-ai-mcp-brave.jpg" width="600"/>
 
-## Prerequisites
+## 前置条件
 
-- Java 17 or higher
+- Java 17 或更高版本
 - Maven 3.6+
-- npx package manager
-- Anthropic API key (Claude) (Get one at https://docs.anthropic.com/en/docs/initial-setup)
-- Brave Search API key (Get one at https://brave.com/search/api/)
+- npx 包管理器
+- Anthropic API 密钥（Claude）（在 https://docs.anthropic.com/en/docs/initial-setup 获取）
+- Brave 搜索 API 密钥（在 https://brave.com/search/api/ 获取）
 
-## Setup
+## 设置
 
-1. Install npx (Node Package eXecute):
-   First, make sure to install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-   and then run:
+1. 安装 npx（Node Package eXecute）：
+   首先，确保安装 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+   然后运行：
    ```bash
    npm install -g npx
    ```
 
-2. Clone the repository:
+2. 克隆仓库：
    ```bash
    git clone https://github.com/spring-projects/spring-ai-examples.git
    cd spring-ai-examples/model-context-protocol/web-search/brave-chatbot
    ```
 
-3. Set up your API keys:
+3. 设置您的 API 密钥：
    ```bash
    export ANTHROPIC_API_KEY='your-anthropic-api-key-here'
    export BRAVE_API_KEY='your-brave-api-key-here'
    ```
 
-4. Build the application:
+4. 构建应用程序：
    ```bash
    ./mvnw clean install
    ```
 
-## Running the Application
+## 运行应用程序
 
-Run the application using Maven:
+使用 Maven 运行应用程序：
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The application will start an interactive chat session where you can ask questions. The chatbot will use Brave Search when it needs to find information from the internet to answer your queries.
+应用程序将启动一个交互式聊天会话，您可以在其中提问。聊天机器人将在需要从互联网查找信息以回答您的查询时使用 Brave 搜索。
 
-## How it Works
+## 工作原理
 
-The application integrates Spring AI with the Brave Search MCP server through several components:
+应用程序通过多个组件将 Spring AI 与 Brave 搜索 MCP 服务器集成：
 
-### MCP Client Configuration
+### MCP 客户端配置
 
-1. Required dependencies in pom.xml:
+1. pom.xml 中所需的依赖项：
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
@@ -67,7 +67,7 @@ The application integrates Spring AI with the Brave Search MCP server through se
 </dependency>
 ```
 
-2. Application properties (application.yml):
+2. 应用程序属性（application.yml）：
 ```yaml
 spring:
   ai:
@@ -76,7 +76,7 @@ spring:
         enabled: true
         name: brave-search-client
         version: 1.0.0
-        type: SYNC  # or ASYNC for reactive applications
+        type: SYNC  # 或 ASYNC 用于响应式应用程序
         request-timeout: 20s
         stdio:
           root-change-notification: true
@@ -85,7 +85,7 @@ spring:
       api-key: ${ANTHROPIC_API_KEY}
 ```
 
-3. MCP Server Configuration (mcp-servers-config.json):
+3. MCP 服务器配置（mcp-servers-config.json）：
 ```json
 {
   "mcpServers": {
@@ -103,18 +103,18 @@ spring:
 }
 ```
 
-### Client Types
+### 客户端类型
 
-The MCP client supports two types of implementations:
+MCP 客户端支持两种类型的实现：
 
-- **Synchronous (default)**: Uses blocking operations, suitable for traditional request-response patterns
-- **Asynchronous**: Uses non-blocking operations, suitable for reactive applications
+- **同步（默认）**：使用阻塞操作，适用于传统的请求-响应模式
+- **异步**：使用非阻塞操作，适用于响应式应用程序
 
-You can switch between these types using the `spring.ai.mcp.client.type` property (SYNC or ASYNC).
+您可以使用 `spring.ai.mcp.client.type` 属性（SYNC 或 ASYNC）在这些类型之间切换。
 
-### Chat Implementation
+### 聊天实现
 
-The chatbot is implemented using Spring AI's ChatClient with MCP tool integration:
+聊天机器人使用 Spring AI 的 ChatClient 和 MCP 工具集成实现：
 
 ```java
 var chatClient = chatClientBuilder
@@ -124,28 +124,28 @@ var chatClient = chatClientBuilder
     .build();
 ```
 
-Key features:
-- Uses Claude AI model for natural language understanding
-- Integrates Brave Search through MCP for real-time web search capabilities
-- Maintains conversation memory using InMemoryChatMemory
-- Runs as an interactive command-line application
+主要功能：
+- 使用 Claude AI 模型进行自然语言理解
+- 通过 MCP 集成 Brave 搜索，实现实时 Web 搜索功能
+- 使用 InMemoryChatMemory 维护对话记忆
+- 作为交互式命令行应用程序运行
 
-The chatbot can:
-- Answer questions using its built-in knowledge
-- Perform web searches when needed using Brave Search
-- Remember context from previous messages in the conversation
-- Combine information from multiple sources to provide comprehensive answers
+聊天机器人可以：
+- 使用其内置知识回答问题
+- 在需要时使用 Brave 搜索进行 Web 搜索
+- 记住对话中先前消息的上下文
+- 结合来自多个来源的信息提供全面的答案
 
-### Advanced Configuration
+### 高级配置
 
-The MCP client supports additional configuration options:
+MCP 客户端支持其他配置选项：
 
-- Client customization through `McpSyncClientCustomizer` or `McpAsyncClientCustomizer`
-- Multiple transport types: STDIO and SSE (Server-Sent Events)
-- Integration with Spring AI's tool execution framework
-- Automatic client initialization and lifecycle management
+- 通过 `McpSyncClientCustomizer` 或 `McpAsyncClientCustomizer` 进行客户端自定义
+- 多种传输类型：STDIO 和 SSE（服务器发送事件）
+- 与 Spring AI 的工具执行框架集成
+- 自动客户端初始化和生命周期管理
 
-For WebFlux-based applications, you can use the WebFlux starter instead:
+对于基于 WebFlux 的应用程序，您可以改用 WebFlux starter：
 
 ```xml
 <dependency>
@@ -154,4 +154,4 @@ For WebFlux-based applications, you can use the WebFlux starter instead:
 </dependency>
 ```
 
-This provides similar functionality but uses a WebFlux-based SSE transport implementation, recommended for production deployments.
+这提供了类似的功能，但使用基于 WebFlux 的 SSE 传输实现，建议用于生产部署。

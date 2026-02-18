@@ -1,50 +1,49 @@
 # MCP with OAuth
 
-This sample demonstrates how to secure an MCP server using OAuth2, as per
-the [MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/).
+此示例演示如何使用 OAuth2 保护 MCP 服务器，符合 [MCP 规范](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/)。
 
-## Getting started
+## 快速开始
 
-Run the project with:
+运行项目：
 
 ```
 ./mvnw spring-boot:run
 ```
 
-Obtain a token by calling the `/oauth2/token` endpoint:
+通过调用 `/oauth2/token` 端点获取令牌：
 
 ```shell
 curl -XPOST "http://localhost:8080/oauth2/token" \
   --data grant_type=client_credentials \
   --user "mcp-client:secret"
-# And copy-paste the access token
-# Or use JQ:
+# 并复制粘贴访问令牌
+# 或使用 JQ：
 curl -XPOST "http://localhost:8080/oauth2/token" \
   --data grant_type=client_credentials \
   --user "mcp-client:secret" | jq -r ".access_token"
 ```
 
-Store that token, and then boot up the MCP inspector:
+存储该令牌，然后启动 MCP 检查器：
 
 ```shell
 npx @modelcontextprotocol/inspector@0.6.0
 ```
 
-In the MCP inspector, paste your token. Click connect, and voilà!
+在 MCP 检查器中，粘贴您的令牌。点击连接，完成！
 
 ![MCP inspector](./mcp-inspector.png)
 
-Note that the token is only valid for 5 minutes
+注意��令牌仅有效 5 分钟
 
-## Implementation considerations
+## 实现注意事项
 
-### Dependencies
+### 依赖项
 
-In Spring, OAuth2 Support for MCP server means adding:
+在 Spring 中，MCP 服务器的 OAuth2 支持意味着添加：
 
-1. [Spring Security](https://docs.spring.io/spring-security/) (infrastructure for security)
-2. [Spring Authorization Server](https://docs.spring.io/spring-authorization-server/) (issuing tokens)
+1. [Spring Security](https://docs.spring.io/spring-security/)（安全基础设施）
+2. [Spring Authorization Server](https://docs.spring.io/spring-authorization-server/)（颁发令牌）
 3. [Spring Security: OAuth2 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html#page-title) (
-   authentication using tokens)
+   使用令牌进行身份验证）
 
-Note that Spring Auth Server does not support the reactive stack, so issuing tokens only works in Servlet.
+注意，Spring Auth Server 不支持响应式栈，因此令牌颁发仅在 Servlet 中工作。

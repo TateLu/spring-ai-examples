@@ -1,23 +1,23 @@
-# Prompt Engineering with Spring AI
+# 使用 Spring AI 的提示工程
 
 ![Spring AI Prompt Engineering](prompt-engineering-spring-ai.png)
 
-## Overview
+## 概述
 
-This repository contains practical implementations of Prompt Engineering techniques using [Spring AI](https://docs.spring.io/spring-ai/reference/index.html). These examples accompany the blog post: [Spring AI Prompt Engineering Patterns](https://spring.io/blog/2025/04/14/spring-ai-prompt-engineering-patterns).
+此仓库包含使用 [Spring AI](https://docs.spring.io/spring-ai/reference/index.html) 的提示工程技术的实际实现。这些示例附带了博客文章：[Spring AI Prompt Engineering Patterns](https://spring.io/blog/2025/04/14/spring-ai-prompt-engineering-patterns)。
 
-The examples and patterns are based on the comprehensive [Prompt Engineering Guide](https://www.kaggle.com/whitepaper-prompt-engineering) that covers the theory, principles, and patterns of effective prompt engineering. 
+这些示例和模式基于全面的 [Prompt Engineering Guide](https://www.kaggle.com/whitepaper-prompt-engineering)，该指南涵盖了有效提示工程的理论、原则和模式。
 
-Here we shows how to translate those concepts into working Java code using Spring AI's fluent [ChatClient API](https://docs.spring.io/spring-ai/reference/api/chatclient.html). 
+这里我们展示了如何使用 Spring AI 的流畅的 [ChatClient API](https://docs.spring.io/spring-ai/reference/api/chatclient.html) 将这些概念转换为可工作的 Java 代码。
 
 
-#### Structure
+#### 结构
 
-The examples follow the same structure and patterns outlined in the original Goolge Prompt Egineering guide, making it easy to reference between theory and implementation.
+这些示例遵循原始 Google Prompt Engineering 指南中概述的相同结构和模式，使在理论和实现之间进行参考变得容易。
 
-## Resources
+## 资源
 
-- [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/index.html)
-- [ChatClient API Reference](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
-- [Google's Prompt Engineering Guide](https://www.kaggle.com/whitepaper-prompt-engineering)
-- [Spring AI Prompt Engineering Patterns  Blog](https://spring.io/blog/2025/04/14/spring-ai-prompt-engineering-patterns)
+- [Spring AI 文档](https://docs.spring.io/spring-ai/reference/index.html)
+- [ChatClient API 参考](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
+- [Google 的 Prompt Engineering 指南](https://www.kaggle.com/whitepaper-prompt-engineering)
+- [Spring AI Prompt Engineering Patterns 博客](https://spring.io/blog/2025/04/14/spring-ai-prompt-engineering-patterns)

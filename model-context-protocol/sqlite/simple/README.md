@@ -1,69 +1,70 @@
-# Spring AI Model Context Protocol Demo Application
+# Spring AI Model Context Protocol Demo 应用程序
 
-A demo application showcasing the integration of Spring AI with SQLite databases using the Model Context Protocol (MCP). This application enables natural language interactions with your SQLite database through a command-line interface.
+一个演示应用程序，展示 Spring AI 与 SQLite 数据库的集成，使用模型上下文协议（MCP）。该应用程序通过命令行界面实现与 SQLite 数据库的自然语言交互。
 
-It uses the [SQLite MCP-Server](https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite) to enable running SQL queries, analyzing business data, and automatically generating business insight memos.
+它使用 [SQLite MCP-Server](https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite) 来执行 SQL 查询、分析业务数据和自动生成业务洞察备忘录。
 
-## Features
+## 功能
 
-- Natural language querying of SQLite databases
-- Predefined question mode for automated database analysis
-- Seamless integration with OpenAI's language models
-- Built on Spring AI and Model Context Protocol
+- SQLite 数据库的自然语言查询
+- 预定义问题模式，用于自动化数据库分析
+- 与 OpenAI 语言模型的无缝集成
+- 基于 Spring AI 和模型上下文协议构建
 
-## Prerequisites
+## 前置条件
 
-- Java 17 or higher
+- Java 17 或更高版本
 - Maven 3.6+
-- uvx package manager
+- uvx 包管理器
 - Git
-- OpenAI API key
-- SQLite (optional, for database modifications)
+- OpenAI API 密钥
+- SQLite（可选，用于数据库修改）
 
-## Installation
+## 安装
 
-1. Install uvx (Universal Package Manager):
+1. 安装 uvx（通用包管理器）：
    ```bash
-   # Follow installation instructions at:
+   # 按照以下链接的安装说明操作：
    https://docs.astral.sh/uv/getting-started/installation/
    ```
 
-2. Clone the repository:
+2. 克隆仓库：
    ```bash
    git clone https://github.com/spring-projects/spring-ai-examples.git
    cd model-context-protocol/sqlite/simple
    ```
 
-3. Set up your OpenAI API key:
+3. 设置您的 OpenAI API 密钥：
    ```bash
    export OPENAI_API_KEY='your-api-key-here'
    ```
 
-## Sample SQLite database
+## 示例 SQLite 数据库
 
-SQLite database files are portable across operating systems.  This repository contains a sample database file named `test.db`.
+SQLite 数据库文件可在不同操作系统之间移植。该仓库包含一个名为 `test.db` 的示例数据库文件。
 
-It has a `PRODUCTS` table and was created using the script `create-database.sh`
+它有一个 `PRODUCTS` 表，是使用 `create-database.sh` 脚本创建的。
 
-## Running the Application
+## 运行应用程序
 
-### Predefined Questions
-Runs through a set of preset database queries:
+### 预定义问题
+
+运行一组预设的数据库查询：
 ```bash
 ./mvnw spring-boot:run
 ```
 
-## Architecture Overview
+## 架构概述
 
-Spring AI's integration with MCP follows a simple chain of components:
+Spring AI 与 MCP 的集成遵循简单的组件链：
 
-1. **MCP Client** provides the base communication layer with your database
-2. **Function Callbacks** expose database operations as AI-callable functions
-3. **Chat Client** connects these functions to the AI model
+1. **MCP 客户端** 提供与数据库的基础通信层
+2. **函数回调** 将数据库操作作为 AI 可调用的函数公开
+3. **聊天客户端** 将这些函数连接到 AI 模型
 
-The bean definitions are described below, starting with the `ChatClient`
+Bean 定义如下，从 `ChatClient` 开始
 
-### Chat Client
+### 聊天客户端
 
 ```java
 @Bean
@@ -74,7 +75,7 @@ public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilde
     return args -> {
         var chatClient = chatClientBuilder.defaultFunctions(functionCallbacks.toArray(new McpFunctionCallback[0]))
                 .build();
-         // Run Predefined Questions
+         // 运行预定义问题
          System.out.println(chatClient.prompt(
             "Can you connect to my SQLite database and tell me what products are available, and their prices?").call().content());
          // ...
@@ -82,13 +83,13 @@ public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilde
 }
 ```
 
-The chat client setup is remarkably simple - it just needs the function callbacks that were automatically created from the MCP tools. Spring's dependency injection handles all the wiring, making the integration seamless.
+聊天客户端的设置非常简单——只需要从 MCP 工具自动创建的函数回调。Spring 的依赖注入处理所有连接，使集成无缝进行。
 
-Now let's look at the other bean definitions in detail...
+现在让我们详细查看其他 bean 定义...
 
-### Function Callbacks
+### 函数回调
 
-The application registers MCP tools with Spring AI using function callbacks:
+应用程序使用函数回调将 MCP 工具注册到 Spring AI：
 
 ```java
 @Bean
@@ -101,35 +102,35 @@ public List<McpFunctionCallback> functionCallbacks(McpSyncClient mcpClient) {
 }
 ```
 
-#### Purpose
+#### 目的
 
-This bean is responsible for:
-1. Discovering available MCP tools from the client
-2. Converting each tool into a Spring AI function callback
-3. Making these callbacks available for use with the ChatClient
-
-
-#### How It Works
-
-1. `mcpClient.listTools(null)` queries the MCP server for all available tools
-   - The `null` parameter represents a pagination cursor
-   - When null, returns the first page of results
-   - A cursor string can be provided to get results after that position
-2. `.tools()` extracts the tool list from the response
-3. Each tool is transformed into a `McpFunctionCallback` using `.map()`
-4. These callbacks are collected into an array using `.toArray(McpFunctionCallback[]::new)`
-
-#### Usage
-
-The registered callbacks enable the ChatClient to:
-- Access MCP tools during conversations
-- Handle function calls requested by the AI model
-- Execute tools against the MCP server (e.g., SQLite database)
+此 bean 负责：
+1. 从客户端发现可用的 MCP 工具
+2. 将每个工具转换为 Spring AI 函数回调
+3. 使这些回调可供 ChatClient 使用
 
 
-### MCP Client 
+#### 工作原理
 
-The application uses a synchronous MCP client to communicate with the SQLite database:
+1. `mcpClient.listTools(null)` 从 MCP 服务器查询所有可用工具
+   - `null` 参数表示分页游标
+   - 当为 null 时，返回第一页结果
+   - 可以提供游标字符串以获取该位置之后的结果
+2. `.tools()` 从响应中提取工具列表
+3. 使用 `.map()` 将每个工具转换为 `McpFunctionCallback`
+4. 使用 `.toArray(McpFunctionCallback[]::new)` 将这些回调收集到数组中
+
+#### 用法
+
+注册的回调使 ChatClient 能够：
+- 在对话期间访问 MCP 工具
+- 处理 AI 模型请求的函数调用
+- 针对 MCP 服务器（例如 SQLite 数据库）执行工具
+
+
+### MCP 客户端
+
+应用程序使用同步 MCP 客户端与 SQLite 数据库通信：
 
 ```java
 @Bean(destroyMethod = "close")
@@ -148,23 +149,23 @@ public McpSyncClient mcpClient() {
 }
 ```
 
-This configuration:
-1. Creates a stdio-based transport layer that communicates with the `uvx` MCP server
-2. Specifies SQLite as the backend database and its location
-3. Sets a 10-second timeout for operations
-4. Uses Jackson for JSON serialization
-5. Initializes the connection to the MCP server
+此配置：
+1. 创建一个基于 stdio 的传输层，与 `uvx` MCP 服务器通信
+2. 指定 SQLite 作为后端数据库及其位置
+3. 设置 10 秒的操作超时
+4. 使用 Jackson 进行 JSON 序列化
+5. 初始化与 MCP 服务器的连接
 
-The `destroyMethod = "close"` annotation ensures proper cleanup when the application shuts down.
+`destroyMethod = "close"` 注释确保应用程序关闭时进行适当清理。
 
 
 
-## Documentation references
+## 文档参考
 
-You can find out more about this sample application following the this quickstart link to a specific verison in github.
+您可以通过以下快速入门链接了解此示例应用程序的更多详细信息。
 
-Unfortunately, on December 10th 2024, the quickstart was changed from SQLite to be a weather retrieval example.
+遗憾的是，在 2024 年 12 月 10 日，快速入门从 SQLite 更改为天气检索示例。
 
-However, here is the [link](https://github.com/modelcontextprotocol/docs/blob/1024e03f83aa0b8badde9b50dfee4d2e4e7f9446/quickstart.mdx) to the docs before the change if you want to read up on some details.
+但是，如果您想了解一些详细信息，这里有[更改前的文档链接](https://github.com/modelcontextprotocol/docs/blob/1024e03f83aa0b8badde9b50dfee4d2e4e7f9446/quickstart.mdx)。
 
-For example, you may want to create other tables and install SQLite
+例如，您可能想要创建其他表并安装 SQLite

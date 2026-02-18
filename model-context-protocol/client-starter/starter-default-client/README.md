@@ -1,29 +1,29 @@
-# Spring AI - MCP Starter Client
+# Spring AI - MCP Starter 客户端
 
-This project demonstrates how to use the Spring AI MCP (Model Context Protocol) Client Boot Starter in a Spring Boot application. It showcases how to connect to MCP servers and integrate them with Spring AI's tool execution framework.
+此项目演示了如何在 Spring Boot 应用程序中使用 Spring AI MCP (模型上下文协议) 客户端启动器。它展示了如何连接到 MCP 服务器并将它们与 Spring AI 的工具执行框架集成。
 
-Follow the [MCP Client Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html) reference documentation.
+请遵循 [MCP 客户端启动器](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html) 参考文档。
 
-## Overview
+## 概述
 
-The project uses Spring Boot 4.0.0 and Spring AI 2.0.0-SNAPSHOT to create a command-line application that demonstrates MCP server integration. The application:
-- Connects to MCP servers using STDIO and/or SSE (HttpClient-based) transports
-- Integrates with Spring AI's chat capabilities
-- Demonstrates tool execution through MCP servers
-- Takes a user-defined question via the `-Dai.user.input` command-line property, which is mapped to a Spring `@Value` annotation in the code
+该项目使用 Spring Boot 4.0.0 和 Spring AI 2.0.0-SNAPSHOT 创建一个演示 MCP 服务器集成的命令行应用程序。该应用程序:
+- 使用 STDIO 和/或 SSE (基于 HttpClient) 传输连接到 MCP 服务器
+- 与 Spring AI 的聊天功能集成
+- 演示通过 MCP 服务器执行工具
+- 通过 `-Dai.user.input` 命令行属性接受用户定义的问题,该属性映射到代码中的 Spring `@Value` 注解
 
-For example, running the application with `-Dai.user.input="Does Spring AI support MCP?"` will inject this question into the application through Spring's property injection, and the application will use it to query the MCP server.
+例如,使用 `-Dai.user.input="Does Spring AI support MCP?"` 运行应用程序将通过 Spring 的属性注入将此问题注入到应用程序中,应用程序将使用它来查询 MCP 服务器。
 
-## Prerequisites
+## 前置条件
 
-- Java 17 or later
+- Java 17 或更高版本
 - Maven 3.6+
-- Anthropic API key (Claude) (Get one at https://docs.anthropic.com/en/docs/initial-setup)
-- Brave Search API key (for the Brave Search MCP server) (Get one at https://brave.com/search/api/)
+- Anthropic API 密钥 (Claude) (在 https://docs.anthropic.com/en/docs/initial-setup 获取)
+- Brave 搜索 API 密钥 (用于 Brave 搜索 MCP 服务器) (在 https://brave.com/search/api/ 获取)
 
-## Dependencies
+## 依赖项
 
-The project uses the following main dependencies:
+该项目使用以下主要依赖项:
 
 ```xml
 <dependencies>
@@ -38,47 +38,47 @@ The project uses the following main dependencies:
 </dependencies>
 ```
 
-## Configuration
+## 配置
 
-### Application Properties
+### 应用程序属性
 
-Check the [MCP Client configuration properties](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_configuration_properties) documentation.
+请查看 [MCP 客户端配置属性](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_configuration_properties) 文档。
 
-The application can be configured through `application.properties` or `application.yml`:
+应用程序可以通过 `application.properties` 或 `application.yml` 进行配置:
 
-#### Common Properties
+#### 通用属性
 ```properties
-# Application Configuration
+# 应用程序配置
 spring.application.name=mcp
 spring.main.web-application-type=none
 
-# AI Provider Configuration
+# AI 提供者配置
 spring.ai.anthropic.api-key=${ANTHROPIC_API_KEY}
 
-# Enable the MCP client tool-callback auto-configuration
+# 启用 MCP 客户端工具回调自动配置
 spring.ai.mcp.client.toolcallback.enabled=true
 ```
 
-#### STDIO Transport Properties
+#### STDIO 传输属性
 
-Follow the [STDIO Configuration properties](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_stdio_transport_properties) documentation.
+请遵循 [STDIO 配置属性](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_stdio_transport_properties) 文档。
 
-Configure a separate, named configuration for each STDIO server you connect to:
+为您连接的每个 STDIO 服务器配置一个单独的命名配置:
 
 ```properties
 spring.ai.mcp.client.stdio.connections.brave-search.command=npx
 spring.ai.mcp.client.stdio.connections.brave-search.args=-y,@modelcontextprotocol/server-brave-search
 ```
 
-Here, `brave-search` is the name of your connection.
+这里,`brave-search` 是您的连接名称。
 
-Alternatively, you can configure STDIO connections using an external JSON file in the Claude Desktop format:
+或者,您可以使用 Claude Desktop 格式的外部 JSON 文件配置 STDIO 连接:
 
 ```properties
 spring.ai.mcp.client.stdio.servers-configuration=classpath:/mcp-servers-config.json
 ```
 
-Example `mcp-servers-config.json`:
+示例 `mcp-servers-config.json`:
 
 ```json
 {
@@ -96,57 +96,57 @@ Example `mcp-servers-config.json`:
 }
 ```
 
-#### SSE Transport Properties
+#### SSE 传输属性
 
-You can also connect to Server-Sent Events (SSE) servers using HttpClient.
-Follow the [SSE Configuration properties](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_sse_transport_properties) documentation.
+您还可以使用 HttpClient 连接到服务器发送事件 (SSE) 服务器。
+请遵循 [SSE 配置属性](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html#_sse_transport_properties) 文档。
 
-The properties for SSE transport are prefixed with `spring.ai.mcp.client.sse`:
+SSE 传输的属性以 `spring.ai.mcp.client.sse` 为前缀:
 
 ```properties
 spring.ai.mcp.client.sse.connections.server1.url=http://localhost:8080
 spring.ai.mcp.client.sse.connections.server2.url=http://localhost:8081
 ```
 
-## How It Works
+## 工作原理
 
-The application demonstrates a simple command-line interaction with an AI model using MCP tools:
+该应用程序演示了使用 MCP 工具与 AI 模型的简单命令行交互:
 
-1. The application starts and configures multiple MCP Clients (one for each provided STDIO or SSE connection configuration)
-2. It builds a ChatClient with the configured MCP tools
-3. Sends a predefined question (set via the `ai.user.input` property) to the AI model
-4. Displays the AI's response
-5. Automatically closes the application
+1. 应用程序启动并配置多个 MCP 客户端(每个提供的 STDIO 或 SSE 连接配置一个)
+2. 它使用配置的 MCP 工具构建 ChatClient
+3. 向 AI 模型发送预定义的问题(通过 `ai.user.input` 属性设置)
+4. 显示 AI 的响应
+5. 自动关闭应用程序
 
-## Running the Application
+## 运行应用程序
 
-1. Set the required environment variables:
+1. 设置必需的环境变量:
    ```bash
    export ANTHROPIC_API_KEY=your-api-key
-   
-   # For the Brave Search MCP server
+
+   # 用于 Brave 搜索 MCP 服务器
    export BRAVE_API_KEY=your-brave-api-key
    ```
 
-2. Build the application:
-   ```bash   
+2. 构建应用程序:
+   ```bash
    ./mvnw clean install
    ```
 
-3. Run the application:
-   ```bash   
-   # Run with the default question from application.properties
+3. 运行应用程序:
+   ```bash
+   # 使用 application.properties 中的默认问题运行
    java -jar target/mcp-starter-default-client-0.0.1-SNAPSHOT.jar
-   
-   # Or specify a custom question
+
+   # 或指定自定义问题
    java -Dai.user.input='Does Spring AI support MCP?' -jar target/mcp-starter-default-client-0.0.1-SNAPSHOT.jar
    ```
 
-The application will execute the question, use the configured MCP tools to answer it, and display the AI assistant's response.
+应用程序将执行问题,使用配置的 MCP 工具来回答它,并显示 AI 助手的响应。
 
-## Additional Resources
+## 其他资源
 
-- [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
-- [MCP Client Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
-- [Model Context Protocol Specification](https://modelcontextprotocol.github.io/specification/)
-- [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [Spring AI 文档](https://docs.spring.io/spring-ai/reference/)
+- [MCP 客户端启动器](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
+- [模型上下文协议规范](https://modelcontextprotocol.github.io/specification/)
+- [Spring Boot 文档](https://docs.spring.io/spring-boot/docs/current/reference/html/)

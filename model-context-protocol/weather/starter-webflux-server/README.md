@@ -1,22 +1,22 @@
 # Spring AI MCP Weather Server Sample with WebFlux Starter
 
-This sample project demonstrates how to create an MCP server using the Spring AI MCP Server Boot Starter with WebFlux transport. It implements a weather service that exposes tools for retrieving weather information using the National Weather Service API.
+此示例项目演示如何使用 Spring AI MCP Server Boot Starter 和 WebFlux 传输创建 MCP 服务器。它实现了一个天气服务，公开使用国家气象服务 API 获取天气信息的工具。
 
-For more information, see the [MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html) reference documentation.
+有关更多信息，请参阅 [MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html) 参考文档。
 
-## Overview
+## 概述
 
-The sample showcases:
-- Integration with `spring-ai-mcp-server-webflux-spring-boot-starter`
-- Support for both SSE (Server-Sent Events) and STDIO transports
-- Automatic tool registration using Spring AI's `@Tool` annotation
-- Two weather-related tools:
-  - Get weather forecast by location (latitude/longitude)
-  - Get weather alerts by US state
+该示例展示：
+- 与 `spring-ai-mcp-server-webflux-spring-boot-starter` 集成
+- 支持 SSE（服务器发送事件）和 STDIO 传输
+- 使用 Spring AI 的 `@Tool` 注解进行自动工具注册
+- 两个与天气相关的工具：
+  - 按位置（纬度/经度）获取天气预报
+  - 按美国州获取天气警报
 
-## Dependencies
+## 依赖项
 
-The project requires the Spring AI MCP Server WebFlux Boot Starter:
+项目需要 Spring AI MCP Server WebFlux Boot Starter：
 
 ```xml
 <dependency>
@@ -25,88 +25,88 @@ The project requires the Spring AI MCP Server WebFlux Boot Starter:
 </dependency>
 ```
 
-This starter provides:
-- Reactive transport using Spring WebFlux (`WebFluxSseServerTransport`)
-- Auto-configured reactive SSE endpoints
-- Optional STDIO transport
-- Included `spring-boot-starter-webflux` and `mcp-spring-webflux` dependencies
+此 starter 提供：
+- 使用 Spring WebFlux 的响应式传输（`WebFluxSseServerTransport`）
+- 自动配置的响应式 SSE 端点
+- 可选的 STDIO 传输
+- 包含的 `spring-boot-starter-webflux` 和 `mcp-spring-webflux` 依赖项
 
-## Building the Project
+## 构建项目
 
-Build the project using Maven:
+使用 Maven 构建项目：
 ```bash
 ./mvnw clean install -DskipTests
 ```
 
-## Running the Server
+## 运行服务器
 
-The server supports two transport modes:
+服务器支持两种传输模式：
 
-### WebFlux SSE Mode (Default)
+### WebFlux SSE 模式（默认）
 ```bash
 java -jar target/mcp-weather-starter-webflux-server-0.0.1-SNAPSHOT.jar
 ```
 
-### STDIO Mode
-To enable STDIO transport, set the appropriate properties:
+### STDIO 模式
+要启用 STDIO 传输，设置适当的属性：
 ```bash
 java -Dspring.ai.mcp.server.stdio=true -Dspring.main.web-application-type=none -jar target/mcp-weather-starter-webflux-server-0.0.1-SNAPSHOT.jar
 ```
 
-## Configuration
+## 配置
 
-Configure the server through `application.properties`:
+通过 `application.properties` 配置服务器：
 
 ```properties
-# Server identification
+# 服务器标识
 spring.ai.mcp.server.name=my-weather-server
 spring.ai.mcp.server.version=0.0.1
 
-# Server type (SYNC/ASYNC)
+# 服务器类型（SYNC/ASYNC）
 spring.ai.mcp.server.type=SYNC
 
-# Transport configuration
+# 传输配置
 spring.ai.mcp.server.stdio=false
 spring.ai.mcp.server.sse-message-endpoint=/mcp/message
 
-# Change notifications
+# 变更通知
 spring.ai.mcp.server.resource-change-notification=true
 spring.ai.mcp.server.tool-change-notification=true
 spring.ai.mcp.server.prompt-change-notification=true
 
-# Logging (required for STDIO transport)
+# 日志记录（STDIO 传输需要）
 spring.main.banner-mode=off
 logging.file.name=./target/starter-webflux-server.log
 ```
 
-## Available Tools
+## 可用工具
 
-### Weather Forecast Tool
-- Name: `getWeatherForecastByLocation`
-- Description: Get weather forecast for a specific latitude/longitude
-- Parameters:
-  - `latitude`: double - Latitude coordinate
-  - `longitude`: double - Longitude coordinate
-- Example:
+### 天气预报工具
+- 名称：`getWeatherForecastByLocation`
+- 描述：获取特定纬度/经度的天气预报
+- 参数：
+  - `latitude`：double - 纬度坐标
+  - `longitude`：double - 经度坐标
+- 示例：
 ```java
 CallToolResult forecastResult = client.callTool(new CallToolRequest("getWeatherForecastByLocation",
     Map.of("latitude", 47.6062, "longitude", -122.3321)));
 ```
 
-### Weather Alerts Tool
-- Name: `getAlerts`
-- Description: Get weather alerts for a US state
-- Parameters:
-  - `state`: String - Two-letter US state code (e.g., CA, NY)
-- Example:
+### 天气警报工具
+- 名称：`getAlerts`
+- 描述：获取美国州的天气警报
+- 参数：
+  - `state`：String - 两个字母的美国州代码（例如 CA, NY）
+- 示例：
 ```java
-CallToolResult alertResult = client.callTool(new CallToolRequest("getAlerts", 
+CallToolResult alertResult = client.callTool(new CallToolRequest("getAlerts",
     Map.of("state", "NY")));
 ```
 
-## Server Implementation
+## 服务器实现
 
-The server uses Spring Boot and Spring AI's tool annotations for automatic tool registration:
+服务器使用 Spring Boot 和 Spring AI 的工具注解进行自动工具注册：
 
 ```java
 @SpringBootApplication
@@ -122,41 +122,41 @@ public class McpServerApplication {
 }
 ```
 
-The `WeatherService` implements the weather tools using the `@Tool` annotation:
+`WeatherService` 使用 `@Tool` 注解实现天气工具：
 
 ```java
 @Service
 public class WeatherService {
-    @Tool(description = "Get weather forecast for a specific latitude/longitude")
+    @Tool(description = "获取特定纬度/经度的天气预报")
     public String getWeatherForecastByLocation(double latitude, double longitude) {
-        // Implementation using weather.gov API
+        // 使用 weather.gov API 实现
     }
 
-    @Tool(description = "Get weather alerts for a US state. Input is Two-letter US state code (e.g., CA, NY)")
+    @Tool(description = "获取美国州的天气警报。输入是两个字母的美国州代码（例如 CA, NY）")
     public String getAlerts(String state) {
-        // Implementation using weather.gov API
+        // 使用 weather.gov API 实现
     }
 }
 ```
 
-## MCP Clients 
+## MCP 客户端
 
-You can connect to the weather server using either STDIO or SSE transport:
+您可以使用 STDIO 或 SSE 传输连接到天气服务器：
 
-### Manual Clients
+### 手动客户端
 
-#### WebFlux SSE Client
+#### WebFlux SSE 客户端
 
-For servers using SSE transport:
+对于使用 SSE 传输的服务器：
 
 ```java
 var transport = new WebFluxSseClientTransport(WebClient.builder().baseUrl("http://localhost:8080"));
 var client = McpClient.sync(transport).build();
 ```
 
-#### STDIO Client
+#### STDIO 客户端
 
-For servers using STDIO transport:
+对于使用 STDIO 传输的服务器：
 
 ```java
 var stdioParams = ServerParameters.builder("java")
@@ -172,22 +172,22 @@ var transport = new StdioClientTransport(stdioParams);
 var client = McpClient.sync(transport).build();
 ```
 
-The sample project includes example client implementations:
-- [SampleClient.java](src/test/java/org/springframework/ai/mcp/sample/client/SampleClient.java): Manual MCP client implementation
-- [ClientStdio.java](src/test/java/org/springframework/ai/mcp/sample/client/ClientStdio.java): STDIO transport connection
-- [ClientSse.java](src/test/java/org/springframework/ai/mcp/sample/client/ClientSse.java): SSE transport connection
+示例项目包含示例客户端实现：
+- [SampleClient.java](src/test/java/org/springframework/ai/mcp/sample/client/SampleClient.java)：手动 MCP 客户端实现
+- [ClientStdio.java](src/test/java/org/springframework/ai/mcp/sample/client/ClientStdio.java)：STDIO 传输连接
+- [ClientSse.java](src/test/java/org/springframework/ai/mcp/sample/client/ClientSse.java)：SSE 传输连接
 
-For a better development experience, consider using the [MCP Client Boot Starters](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html). These starters enable auto-configuration of multiple STDIO and/or SSE connections to MCP servers. See the [starter-default-client](../../client-starter/starter-default-client) and [starter-webflux-client](../../client-starter/starter-webflux-client) projects for examples.
+为了获得更好的开发体验，建议使用 [MCP Client Boot Starters](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)。这些 starter 可以自动配置多个与 MCP 服务器的 STDIO 和/或 SSE 连接。有关示例，请参阅 [starter-default-client](../../client-starter/starter-default-client) 和 [starter-webflux-client](../../client-starter/starter-webflux-client) 项目。
 
-### Boot Starter Clients
+### Boot Starter 客户端
 
-Lets use the [starter-webflux-client](../../client-starter/starter-webflux-client) client to connect to our weather `starter-webflux-server`.
+让我们使用 [starter-webflux-client](../../client-starter/starter-webflux-client) 客户端连接到我们的天气 `starter-webflux-server`。
 
-Follow the `starter-webflux-client` readme instruction to build a `mcp-starter-webflux-client-0.0.1-SNAPSHOT.jar` client application.
+按照 `starter-webflux-client` readme 说明构建 `mcp-starter-webflux-client-0.0.1-SNAPSHOT.jar` 客户端应用程序。
 
-#### STDIO Transport
+#### STDIO 传输
 
-1. Create a `mcp-servers-config.json` configuration file with this content:
+1. 创建包含以下内容的 `mcp-servers-config.json` 配置文件：
 
 ```json
 {
@@ -206,7 +206,7 @@ Follow the `starter-webflux-client` readme instruction to build a `mcp-starter-w
 }
 ```
 
-2. Run the client using the configuration file:
+2. 使用配置文件运行客户端：
 
 ```bash
 java -Dspring.ai.mcp.client.stdio.servers-configuration=file:mcp-servers-config.json \
@@ -215,17 +215,17 @@ java -Dspring.ai.mcp.client.stdio.servers-configuration=file:mcp-servers-config.
  -jar mcp-starter-webflux-client-0.0.1-SNAPSHOT.jar
 ```
 
-#### SSE (WebFlux) Transport
+#### SSE (WebFlux) 传输
 
-1. Start the `mcp-weather-starter-webflux-server`:
+1. 启动 `mcp-weather-starter-webflux-server`：
 
 ```bash
 java -jar mcp-weather-starter-webflux-server-0.0.1-SNAPSHOT.jar
 ```
 
-starts the MCP server on port 8080.
+在端口 8080 上启动 MCP 服务器。
 
-2. In another console start the client configured with SSE transport:
+2. 在另一个控制台中启动配置了 SSE 传输的客户端：
 
 ```bash
 java -Dspring.ai.mcp.client.sse.connections.weather-server.url=http://localhost:8080 \
@@ -234,10 +234,10 @@ java -Dspring.ai.mcp.client.sse.connections.weather-server.url=http://localhost:
  -jar mcp-starter-webflux-client-0.0.1-SNAPSHOT.jar
 ```
 
-## Additional Resources
+## 其他资源
 
-* [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
+* [Spring AI 文档](https://docs.spring.io/spring-ai/reference/)
 * [MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
 * [MCP Client Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-client-docs.html)
-* [Model Context Protocol Specification](https://modelcontextprotocol.github.io/specification/)
-* [Spring Boot Auto-configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration)
+* [Model Context Protocol 规范](https://modelcontextprotocol.github.io/specification/)
+* [Spring Boot 自动配置](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration)

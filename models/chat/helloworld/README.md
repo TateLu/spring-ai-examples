@@ -1,46 +1,48 @@
-# Spring AI Hello World Chat Application
+# Spring AI Hello World 聊天应用程序
 
-A simple command-line chat application demonstrating Spring AI's ChatClient capabilities with AI models.
+一个简单的命令行聊天应用程序，演示 Spring AI 的 ChatClient 功能与 AI 模型。
 
-## Prerequisites
-- Java 17 or higher
+## 前置条件
+- Java 17 或更高版本
 - Maven
 
-This examples uses OpenAI as the model provider.
+此示例使用 OpenAI 作为模型提供商。
 
-Before using the AI commands, make sure you have a developer token from OpenAI.
+在使用 AI 命令之前，请确保您拥有来自 OpenAI 的开发者令牌。
 
-Create an account at [OpenAI Signup](https://platform.openai.com/signup) and generate the token at [API Keys](https://platform.openai.com/account/api-keys).
+在 [OpenAI 注册](https://platform.openai.com/signup) 创建账户，并在 [API 密钥](https://platform.openai.com/account/api-keys) 生成令牌。
 
-The Spring AI project defines a configuration property named `spring.ai.openai.api-key` that you should set to the value of the API key obtained from OpenAI.
+Spring AI 项目定义了一个名为 `spring.ai.openai.api-key` 的配置属性，您应该将其设置为您从 OpenAI 获得的 API 密钥的值。
 
-Exporting an environment variable is one way to set that configuration property:
+导出环境变量是设置该配置属性的一种方法：
 
 ```shell
-export SPRING_AI_OPENAI_API_KEY=<INSERT KEY HERE>
+export SPRING_AI_OPENAI_API_KEY=<在此处插入密钥>
 ```
 
 
 
-## Running the Application
-1. Clone the repository
-2. Navigate to the project directory
-3. Run the application using Maven wrapper:
+## 运行应用程序
+1. 克隆仓库
+2. 导航到项目目录
+3. 使用 Maven wrapper 运行应用程序：
    `./mvnw spring-boot:run`
 
-## Example Interaction
-Once started, you'll see the Spring Boot banner and then:
+## 示例交互
+启动后，您将看到 Spring Boot banner，然后是：
 
 ```text
-Let's chat!
-USER: tell me a joke
-ASSISTANT: Why don't skeletons fight each other?
-They don't have the guts.
+让我们聊天！
+USER: 给我讲个笑话
+ASSISTANT: 为什么骷髅不会互相打架？
+它们没有胆量。
 ```
 
-## Technical Details
+## 技术细节
 
-The application uses Spring AI's ChatClient to interact with AI models. The following demo code showcases a basic setup for creating a chat interaction in a Spring Boot application:
+> **[架构文档 (Architecture Documentation)](docs/architecture.md)** - 查看 Spring AI ChatClient 的详细技术架构、实现原理和数据流程图
+
+应用程序使用 Spring AI 的 ChatClient 与 AI 模型交互。以下演示代码展示了在 Spring Boot 应用程序中创建聊天交互的基本设置：
 
 ```java
 @SpringBootApplication
@@ -55,7 +57,7 @@ public class Application {
         return args -> {
             var chat = builder.build();
             var scanner = new Scanner(System.in);
-            System.out.println("\nLet's chat!");
+            System.out.println("\n让我们聊天！");
             while (true) {
                 System.out.print("\nUSER: ");
                 System.out.println("ASSISTANT: " +
@@ -66,19 +68,21 @@ public class Application {
 }
 ```
 
-# Explanation
-1. Application Entry Point:
+# 解释
+1. 应用程序入口点：
 
-* The `Application` class is annotated with `@SpringBootApplication`, marking it as the main entry point of the Spring Boot application.
-* The `main` method launches the application by calling SpringApplication.run.
+* `Application` 类使用 `@SpringBootApplication` 注解，标记它为 Spring Boot 应用程序的主入口点。
+* `main` 方法通过调用 SpringApplication.run 启动应用程序。
 
-2. Command Line Runner:
-* A `CommandLineRunner` bean is defined to initiate the chat functionality after the application starts.
-* A `ChatClient.Builder` to create a ChatClient instance, which serves as the core interface for AI interactions.
+2. 命令行运行器：
+
+* 定义了一个 `CommandLineRunner` bean 来在应用程序启动后启动聊天功能。
+* 一个 `ChatClient.Builder` 用于创建 ChatClient 实例，它作为 AI 交互的核心接口。
 
 
-3. User Interaction:
-* A `Scanner` is used to capture user input from the command line.
-* In a continuous loop, the application reads a line from the user (``USER``) and sends it as a prompt to the `ChatClient`.
-* The assistant's response is fetched with `chat.prompt(...).call().content()` and displayed as the `ASSISTANT'`s reply.
-* This simple loop continues until the user terminates the application.
+3. 用户交互：
+
+* 使用 `Scanner` 捕获来自命令行的用户输入。
+* 在连续循环中，应用程序从用户读取一行（``USER``）并将其作为提示发送给 `ChatClient`。
+* 助手的响应使用 `chat.prompt(...).call().content()` 获取并显示为 `ASSISTANT'` 的回复。
+* 这个简单的循环持续，直到用户终止应用程序。

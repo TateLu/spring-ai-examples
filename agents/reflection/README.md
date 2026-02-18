@@ -1,116 +1,116 @@
-# Spring AI Reflection Agent Application
+# Spring AI Reflection Agent 应用程序
 
-This project demonstrates the use of Spring AI to create a self-improving code generation system. The Reflection Agent uses two ChatClient instances in an iterative loop - one for generation and one for critique - to produce high-quality Java code.
+此项目演示了使用 Spring AI 创建自我改进代码生成系统的用法。Reflection Agent 使用两个 ChatClient 实例进行迭代循环——一个用于生成，一个用于批评——以生成高质量的 Java 代码。
 
-It is based on the code in the repository https://github.com/neural-maze/agentic_patterns
+它基于仓库 https://github.com/neural-maze/agentic_patterns 中的代码
 
-The application implements a reflection-based system where the **Reflection Agent**:
+该应用程序实现了一个基于反射的系统，其中 **Reflection Agent**：
 
-- Uses a **generation ChatClient** to create code based on user prompts
-- Uses a **critique ChatClient** to review the generated code
-- Iteratively improves the code by feeding critique back to the **generation ChatClient**
-- Continues this loop until the **critique ChatClient** is satisfied with the quality
+- 使用一个 **生成 ChatClient** 根据用户提示创建代码
+- 使用一个 **批评 ChatClient** 审查生成的代码
+- 通过将批评反馈给 **生成 ChatClient** 来迭代地改进代码
+- 继续此循环��直到 **批评 ChatClient** 对质量满意为止
 
 
-## Prerequisites
-- Java 17 or higher
+## 前置条件
+- Java 17 或更高版本
 - Maven
 
-This examples uses OpenAI as the model provider.
+此示例使用 OpenAI 作为模型提供商。
 
-Before using the AI commands, make sure you have a developer token from OpenAI.
+在使用 AI 命令之前，请确保您拥有来自 OpenAI 的开发者令牌。
 
-Create an account at [OpenAI Signup](https://platform.openai.com/signup) and generate the token at [API Keys](https://platform.openai.com/account/api-keys).
+在 [OpenAI 注册](https://platform.openai.com/signup) 创建账户，并在 [API 密钥](https://platform.openai.com/account/api-keys) 生成令牌。
 
-The Spring AI project defines a configuration property named `spring.ai.openai.api-key` that you should set to the value of the API key obtained from OpenAI.
+Spring AI 项目定义了一个名为 `spring.ai.openai.api-key` 的配置属性，您应该将其设置为您从 OpenAI 获得的 API 密钥的值。
 
-Exporting an environment variable is one way to set that configuration property:
+导出环境变量是设置该配置属性的一种方法：
 
 ```shell
-export SPRING_AI_OPENAI_API_KEY=<INSERT KEY HERE>
+export SPRING_AI_OPENAI_API_KEY=<在此处插入密钥>
 ```
 
 
 
-## Running the Application
-1. Clone the repository
-2. Navigate to the project directory
-3. Run the application using Maven wrapper:
+## 运行应用程序
+1. 克隆仓库
+2. 导航到项目目录
+3. 使用 Maven wrapper 运行应用程序：
    `./mvnw spring-boot:run`
 
-## Project Structure
-### Main Components
+## 项目结构
+### 主要组件
 
-* `Application.java`: The main Spring Boot application that provides the command-line interface
-* `ReflectionAgent.java`: The core component that manages the iteration between generation and critique
+* `Application.java`：提供命令行界面的主 Spring Boot 应用程序
+* `ReflectionAgent.java`：管理生成和批评之间迭代的核心组件
 
 
-## How It Works
+## 工作原理
 
-### Initial Setup
+### 初始设置
 
-The Reflection Agent creates two `ChatClient` instances:
+Reflection Agent 创建两个 `ChatClient` 实例：
 
-- `generateChatClient`: For generating Java code based on user requests
-- `critiqueChatClient`: For reviewing and critiquing the generated code
+- `generateChatClient`：用于根据用户请求生成 Java 代码
+- `critiqueChatClient`：用于审查和批评生成的代码
 
-## Generation Process
+## 生成过程
 
-- User inputs a request
-- The generation `ChatClient` creates initial code
-- The critique `ChatClient` reviews the code
-- If improvements are needed, the generation `ChatClient` creates a revised version
-- This continues for up to `maxIterations` or until the critique `ChatClient` approves (`<OK>`)
-- 
-## ChatClient Configurations
+- 用户输入请求
+- 生成 `ChatClient` 创建初始代码
+- 批评 `ChatClient` 审查代码
+- 如果需要改进，生成 `ChatClient` 创建修订版本
+- 这将持续最多 `maxIterations` 次或直到批评 `ChatClient` 批准（`<OK>`）
+-
+## ChatClient 配置
 
-- **Generation ChatClient** system prompt:
+- **生成 ChatClient** 系统提示：
 
 ```text
-You are a Java programmer tasked with generating high quality
-Java code. Your task is to generate the best content possible
-for the user's request.
+您是一名 Java 程序员，负责生成高质量的
+Java 代码。您的任务是为用户的请求
+生成最好的内容。
 ```
-- **Critique ChatClient** system prompt:
+- **批评 ChatClient** 系统提示：
 ```text
-You are tasked with generating critique and recommendations for
-the user's generated content. If the user content has something
-wrong or something to be improved, output a list of
-recommendations and critiques.
+您负责为用户的生成内容
+生成批评和建议。如果用户内容有
+错误或需要改进，请输出建议
+和批评的列表。
 ```
 
-## Example Run
+## 示例运行
 
-In this sample run, the user requested a JUnit 5 test for a `Person` class.  See the file `JacksonTestAgent.md` for the actual output.
+在此示例运行中，用户请求为 `Person` 类创建一个 JUnit 5 测试。有关实际输出，请参阅文件 `JacksonTestAgent.md`。
 
-### Initial Generation
+### 初始生成
 
-- The generation `ChatClient` created a basic `Person` class and test class
-- Included serialization/deserialization functionality
-- Implemented basic test cases
+- 生成 `ChatClient` 创建了基本的 `Person` 类和测试类
+- 包括序列化/反序列化功能
+- 实现了基本测试用例
 
-### Critique Phase
+### 批评阶段
 
-The critique `ChatClient identified several improvements:
+批评 `ChatClient` 识别了几项改进：
 
-- Better error handling
-- Improved code readability
-- Need for edge case testing
-- Better test structure
-- Expanded test coverage
-- Enhanced Java class structure
-- Modern Java feature usage
+- 更好的错误处理
+- 改进的代码可读性
+- 需要边缘情况测试
+- 更好的测试结构
+- 扩展的测试覆盖范围
+- 增强的 Java 类结构
+- 现代 Java 功能的使用
 
-### Final Result
+### 最终结果
 
-The generation `ChatClient` created improved code with:
+生成 `ChatClient` 创建了改进的代码，包括：
 
-- Separated test methods for better modularity
-- Enhanced error handling with detailed messages
-- Added edge case testing for null values
-- Improved code structure and readability
-- Better test coverage
+- 更好的模块化的分离测试方法
+- 增强的错误处理和详细消息
+- 添加了 null 值的边缘情况测试
+- 改进的代码结构和可读性
+- 更好的测试覆盖范围
 
 ## MergeSort
 
-The file `AgentMergeSort.md` shows a similar run to create a merge sort algorithm.  There is also a JUnit test of the code that was generated to show it works.
+文件 `AgentMergeSort.md` 显示了类似的运行，用于创建归并排序算法。还有一个为生成的代码创建的 JUnit 测试，以演示其工作正常。

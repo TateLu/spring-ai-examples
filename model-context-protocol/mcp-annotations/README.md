@@ -1,65 +1,65 @@
-# Spring AI MCP Annotations Examples
+# Spring AI MCP 注解示例
 
-This directory contains examples demonstrating the Model Context Protocol (MCP) using Spring AI's annotation-based approach. These examples showcase MCP capabilities including tools, resources, prompts, completions, and client-side handlers using declarative annotations.
+此目录包含演示使用 Spring AI 基于注解的方法的模型上下文协议 (MCP) 的示例。这些示例展示了 MCP 功能,包括使用声明式注解的工具、资源、提示、自动完成和客户端处理程序。
 
-## Overview
+## 概述
 
-The MCP Annotations examples demonstrate:
+MCP 注解示例演示:
 
-- **Annotation-Driven Development**: Simplified MCP development using `@McpTool`, `@McpResource`, `@McpPrompt`, `@McpComplete`, and client annotations
-- **Declarative Configuration**: Automatic registration and configuration through annotations
-- **Client-Server Communication**: Full bidirectional MCP communication patterns
-- **Multiple MCP Features**: Tools, resources, prompts, completions, and client handlers
-- **Mixed Annotation Styles**: Both MCP annotations and Spring AI `@Tool` annotations
+- **注解驱动开发**: 使用 `@McpTool`、`@McpResource`、`@McpPrompt`、`@McpComplete` 和客户端注解简化 MCP 开发
+- **声明式配置**: 通过注解自动注册和配置
+- **客户端-服务器通信**: 完整的双向 MCP 通信模式
+- **多个 MCP 功能**: 工具、资源、提示、自动完成和客户端处理程序
+- **混合注解样式**: 同时支持 MCP 注解和 Spring AI `@Tool` 注解
 
-## Projects
+## 项目
 
 ### 1. mcp-annotations-server
-A comprehensive MCP server implementation showcasing all major MCP features using annotations.
+一个全面的 MCP 服务器实现,展示使用注解的所有主要 MCP 功能。
 
-#### Tools
-- **Weather Tool**: Temperature data from Open-Meteo API using `@McpTool`
-- **Additional Tools**: Weather forecast and alerts from Weather.gov API using Spring AI `@Tool`
+#### 工具
+- **天气工具**: 使用 `@McpTool` 从 Open-Meteo API 获取温度数据
+- **其他工具**: 使用 Spring AI `@Tool` 从 Weather.gov API 获取天气预报和警报
 
-#### Resources
-- **User Profiles**: Complete user information with multiple access patterns
-- **User Attributes**: Individual attribute access with URI variables
-- **User Status**: Dynamic status information with different return types
-- **User Connections**: Social connections and relationships
-- **User Notifications**: Dynamic notification generation
-- **User Avatars**: Binary data handling with custom MIME types
-- **User Location**: Simple location information
+#### 资源
+- **用户配置文件**: 具有多种访问模式的完整用户信息
+- **用户属性**: 使用 URI 变量的单个属性访问
+- **用户状态**: 具有不同返回类型的动态状态信息
+- **用户连接**: 社交连接和关系
+- **用户通知**: 动态通知生成
+- **用户头像**: 带有自定义 MIME 类型的二进制数据处理
+- **用户位置**: 简单的位置信息
 
-#### Prompts
-- **Greeting Prompts**: Simple parameterized greetings
-- **Personalized Messages**: Complex prompts with multiple parameters and logic
-- **Conversation Starters**: Multi-message conversation flows
-- **Dynamic Content**: Map-based argument handling
-- **Single Message**: Single message responses
-- **String List**: List-based responses
+#### 提示
+- **问候提示**: 简单的参数化问候
+- **个性化消息**: 具有多个参数和逻辑的复杂提示
+- **对话开场白**: 多消息对话流程
+- **动态内容**: 基于 map 的参数处理
+- **单条消息**: 单条消息响应
+- **字符串列表**: 基于列表的响应
 
-#### Completions
-- **Username Completion**: Auto-complete for user status URIs
-- **Name Completion**: Auto-complete for personalized message prompts
-- **Country Completion**: Travel-related country name completion
+#### 自动完成
+- **用户名自动完成**: 用户状态 URI 的自动完成
+- **名称自动完成**: 个性化消息提示的自动完成
+- **国家自动完成**: 与旅行相关的国家名称自动完成
 
 ### 2. mcp-annotations-client
-A simple MCP client implementation demonstrating client-side MCP capabilities using annotations.
+一个简单的 MCP 客户端实现,演示使用注解的客户端 MCP 功能。
 
-#### Handler Types
-- **Progress Handlers**: Track long-running operations with `@McpProgress`
-- **Logging Handlers**: Centralized logging from MCP servers with `@McpLogging`
-- **Sampling Handlers**: LLM request delegation with `@McpSampling`
-- **Elicitation Handlers**: User interaction prompts with `@McpElicitation`
+#### 处理程序类型
+- **进度处理程序**: 使用 `@McpProgress` 跟踪长时间运行的操作
+- **日志处理程序**: 使用 `@McpLogging` 从 MCP 服务器集中记录日志
+- **采样处理程序**: 使用 `@McpSampling` 进行 LLM 请求委托
+- **引诱处理程序**: 使用 `@McpElicitation` 进行用户交互提示
 
-## Architecture Overview
+## 架构概述
 
-### Server Architecture
+### 服务器架构
 
 ```java
 @SpringBootApplication
 public class McpServerApplication {
-    // Traditional Spring AI tool integration
+    // 传统 Spring AI 工具集成
     @Bean
     public ToolCallbackProvider weatherTools(SpringAiToolProvider weatherService) {
         return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
@@ -67,9 +67,9 @@ public class McpServerApplication {
 }
 ```
 
-The server uses automatic annotation scanning to register MCP providers. All `@McpTool`, `@McpResource`, `@McpPrompt`, and `@McpComplete` annotated methods are automatically discovered and registered.
+服务器使用自动注解扫描来注册 MCP 提供者。所有 `@McpTool`、`@McpResource`、`@McpPrompt` 和 `@McpComplete` 注解的方法都会自动被发现和注册。
 
-### Client Architecture
+### 客户端架构
 
 ```java
 @SpringBootApplication
@@ -78,13 +78,13 @@ public class McpClientApplication {
     public CommandLineRunner predefinedQuestions(List<McpSyncClient> mcpClients) {
         return args -> {
             for (McpSyncClient mcpClient : mcpClients) {
-                // Call tools and interact with MCP servers
+                // 调用工具并与 MCP 服务器交互
                 CallToolRequest toolRequest = CallToolRequest.builder()
                     .name("tool1")
                     .arguments(Map.of("input", "test input"))
                     .progressToken("test-progress-token")
                     .build();
-                
+
                 CallToolResult response = mcpClient.callTool(toolRequest);
             }
         };
@@ -92,21 +92,21 @@ public class McpClientApplication {
 }
 ```
 
-Client handlers are automatically registered through annotation scanning.
+客户端处理程序通过注解扫描自动注册。
 
-## Key Implementation Examples
+## 关键实现示例
 
-### Tool Implementation
+### 工具实现
 
 ```java
 @Service
 public class ToolProvider {
-    @McpTool(description = "Get the temperature (in celsius) for a specific location")
+    @McpTool(description = "获取特定位置的温度(摄氏度)")
     public WeatherResponse getTemperature(
-            @McpToolParam(description = "The location latitude") double latitude,
-            @McpToolParam(description = "The location longitude") double longitude,
-            @McpToolParam(description = "The city name") String city) {
-        
+            @McpToolParam(description = "位置纬度") double latitude,
+            @McpToolParam(description = "位置经度") double longitude,
+            @McpToolParam(description = "城市名称") String city) {
+
         return restClient.get()
             .uri("https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m",
                 latitude, longitude)
@@ -116,72 +116,72 @@ public class ToolProvider {
 }
 ```
 
-### Resource Implementation
+### 资源实现
 
 ```java
 @Service
 public class UserProfileResourceProvider {
-    @McpResource(uri = "user-profile://{username}", 
-                 name = "User Profile", 
-                 description = "Provides user profile information for a specific user")
+    @McpResource(uri = "user-profile://{username}",
+                 name = "User Profile",
+                 description = "为特定用户提供用户配置文件信息")
     public ReadResourceResult getUserProfile(ReadResourceRequest request, String username) {
         String profileInfo = formatProfileInfo(userProfiles.getOrDefault(username.toLowerCase(), new HashMap<>()));
         return new ReadResourceResult(List.of(new TextResourceContents(request.uri(), "text/plain", profileInfo)));
     }
 
-    @McpResource(uri = "user-attribute://{username}/{attribute}", 
-                 name = "User Attribute", 
-                 description = "Provides a specific attribute from a user's profile")
+    @McpResource(uri = "user-attribute://{username}/{attribute}",
+                 name = "User Attribute",
+                 description = "从用户配置文件中提供特定属性")
     public ReadResourceResult getUserAttribute(String username, String attribute) {
         Map<String, String> profile = userProfiles.getOrDefault(username.toLowerCase(), new HashMap<>());
         String attributeValue = profile.getOrDefault(attribute, "Attribute not found");
-        
+
         return new ReadResourceResult(
-            List.of(new TextResourceContents("user-attribute://" + username + "/" + attribute, 
+            List.of(new TextResourceContents("user-attribute://" + username + "/" + attribute,
                    "text/plain", username + "'s " + attribute + ": " + attributeValue)));
     }
 }
 ```
 
-### Prompt Implementation
+### 提示实现
 
 ```java
 @Service
 public class PromptProvider {
-    @McpPrompt(name = "personalized-message", 
-               description = "Generates a personalized message based on user information")
+    @McpPrompt(name = "personalized-message",
+               description = "根据用户信息生成个性化消息")
     public GetPromptResult personalizedMessage(
             McpSyncServerExchange exchange,
-            @McpArg(name = "name", description = "The user's name", required = true) String name,
-            @McpArg(name = "age", description = "The user's age", required = false) Integer age,
-            @McpArg(name = "interests", description = "The user's interests", required = false) String interests) {
-        
-        // Log the prompt generation
+            @McpArg(name = "name", description = "用户名称", required = true) String name,
+            @McpArg(name = "age", description = "用户年龄", required = false) Integer age,
+            @McpArg(name = "interests", description = "用户兴趣", required = false) String interests) {
+
+        // 记录提示生成
         exchange.loggingNotification(LoggingMessageNotification.builder()
             .level(LoggingLevel.INFO)
             .data("personalized-message event").build());
 
         StringBuilder message = new StringBuilder();
-        message.append("Hello, ").append(name).append("!\n\n");
-        
+        message.append("你好, ").append(name).append("!\n\n");
+
         if (age != null) {
-            message.append("At ").append(age).append(" years old, you have ");
+            message.append("在 ").append(age).append(" 岁时,你有 ");
             if (age < 30) {
-                message.append("so much ahead of you.\n\n");
+                message.append("很多未来可以期待。\n\n");
             } else if (age < 60) {
-                message.append("gained valuable life experience.\n\n");
+                message.append("获得了宝贵的生活经验。\n\n");
             } else {
-                message.append("accumulated wisdom to share with others.\n\n");
+                message.append("积累了可以与他人分享的智慧。\n\n");
             }
         }
 
-        return new GetPromptResult("Personalized Message",
+        return new GetPromptResult("个性化消息",
             List.of(new PromptMessage(Role.ASSISTANT, new TextContent(message.toString()))));
     }
 }
 ```
 
-### Completion Implementation
+### 自动完成实现
 
 ```java
 @Service
@@ -190,7 +190,7 @@ public class CompletionProvider {
     public List<String> completeUsername(String usernamePrefix) {
         String prefix = usernamePrefix.toLowerCase();
         if (prefix.isEmpty()) {
-            return List.of("Enter a username");
+            return List.of("输入用户名");
         }
 
         String firstLetter = prefix.substring(0, 1);
@@ -216,21 +216,21 @@ public class CompletionProvider {
 }
 ```
 
-### Client Handler Implementation
+### 客户端处理程序实现
 
 ```java
 @Service
 public class McpClientHandlerProviders {
     @McpProgress(clients = "server1")
     public void progressHandler(ProgressNotification progressNotification) {
-        logger.info("MCP PROGRESS: [{}] progress: {} total: {} message: {}",
+        logger.info("MCP 进度: [{}] 进度: {} 总计: {} 消息: {}",
             progressNotification.progressToken(), progressNotification.progress(),
             progressNotification.total(), progressNotification.message());
     }
 
     @McpLogging(clients = "server1")
     public void loggingHandler(LoggingMessageNotification loggingMessage) {
-        logger.info("MCP LOGGING: [{}] {}", loggingMessage.level(), loggingMessage.data());
+        logger.info("MCP 日志记录: [{}] {}", loggingMessage.level(), loggingMessage.data());
     }
 
     @McpSampling(clients = "server1")
@@ -239,21 +239,21 @@ public class McpClientHandlerProviders {
         String modelHint = llmRequest.modelPreferences().hints().get(0).name();
 
         return CreateMessageResult.builder()
-            .content(new McpSchema.TextContent("Response " + userPrompt + " with model hint " + modelHint))
+            .content(new McpSchema.TextContent("响应 " + userPrompt + " 带有模型提示 " + modelHint))
             .build();
     }
 
     @McpElicitation(clients = "server1")
     public ElicitResult elicitationHandler(McpSchema.ElicitRequest request) {
-        logger.info("MCP ELICITATION: {}", request);
+        logger.info("MCP 引诱: {}", request);
         return new ElicitResult(ElicitResult.Action.ACCEPT, Map.of("message", request.message()));
     }
 }
 ```
 
-## Key Dependencies
+## 关键依赖项
 
-### Server Dependencies
+### 服务器依赖项
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
@@ -261,7 +261,7 @@ public class McpClientHandlerProviders {
 </dependency>
 ```
 
-### Client Dependencies
+### 客户端依赖项
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
@@ -269,14 +269,14 @@ public class McpClientHandlerProviders {
 </dependency>
 ```
 
-## Running the Examples
+## 运行示例
 
-### Prerequisites
+### 前置条件
 
-- Java 17 or later
+- Java 17 或更高版本
 - Maven 3.6+
 
-### Step 1: Start the MCP Annotations Server
+### 步骤 1: 启动 MCP 注解服务器
 
 ```bash
 cd mcp-annotations-server
@@ -284,9 +284,9 @@ cd mcp-annotations-server
 java -jar target/mcp-annotations-server-0.0.1-SNAPSHOT.jar
 ```
 
-The server will start on `http://localhost:8080` with SSE transport enabled.
+服务器将在 `http://localhost:8080` 上启动,并启用 SSE 传输。
 
-### Step 2: Run the MCP Annotations Client
+### 步骤 2: 运行 MCP 注解客户端
 
 ```bash
 cd mcp-annotations-client
@@ -294,85 +294,85 @@ cd mcp-annotations-client
 java -jar target/mcp-annotations-client-0.0.1-SNAPSHOT.jar
 ```
 
-## Available Features
+## 可用功能
 
-### Tools
-- `getTemperature`: Get temperature data using Open-Meteo API
+### 工具
+- `getTemperature`: 使用 Open-Meteo API 获取温度数据
 
-### Resources
-- `user-profile://{username}`: Complete user profile information
-- `user-attribute://{username}/{attribute}`: Specific user attributes
-- `user-status://{username}`: User online status
-- `user-connections://{username}`: User social connections
-- `user-notifications://{username}`: User notifications
-- `user-location://{username}`: User location information
-- `user-avatar://{username}`: User avatar images (base64)
+### 资源
+- `user-profile://{username}`: 完整的用户配置文件信息
+- `user-attribute://{username}/{attribute}`: 特定用户属性
+- `user-status://{username}`: 用户在线状态
+- `user-connections://{username}`: 用户社交连接
+- `user-notifications://{username}`: 用户通知
+- `user-location://{username}`: 用户位置信息
+- `user-avatar://{username}`: 用户头像图像 (base64)
 
-### Prompts
-- `greeting`: Simple greeting with name parameter
-- `personalized-message`: Complex personalized messages with age and interests
-- `conversation-starter`: Multi-message conversation flows
-- `map-arguments`: Demonstrates map-based argument handling
-- `single-message`: Single message responses
-- `string-list`: List-based responses
+### 提示
+- `greeting`: 带有名称参数的简单问候
+- `personalized-message`: 带有年龄和兴趣的复杂个性化消息
+- `conversation-starter`: 多消息对话流程
+- `map-arguments`: 演示基于 map 的参数处理
+- `single-message`: 单条消息响应
+- `string-list`: 基于列表的响应
 
-### Completions
-- Username completion for `user-status://` URIs
-- Name completion for `personalized-message` prompts
-- Country name completion for travel prompts
+### 自动完成
+- `user-status://` URI 的用户名自动完成
+- `personalized-message` 提示的名称自动完成
+- 旅行提示的国家名称自动完成
 
-## Configuration
+## 配置
 
-### Server Configuration (`application.properties`)
+### 服务器配置 (`application.properties`)
 
 ```properties
-# Server identification
+# 服务器标识
 spring.ai.mcp.server.name=my-weather-server
 spring.ai.mcp.server.version=0.0.1
 
-# Disable banner for STDIO transport compatibility
+# 禁用横幅以兼容 STDIO 传输
 spring.main.banner-mode=off
 
-# Logging configuration
+# 日志记录配置
 logging.file.name=./model-context-protocol/mcp-annotations/mcp-annotations-server/target/mcp-annotations-server.log
 
-# Uncomment for STDIO transport
+# 取消注释以使用 STDIO 传输
 # spring.ai.mcp.server.stdio=true
 # spring.main.web-application-type=none
 
-# Uncomment for different protocols
+# 取消注释以使用不同的协议
 # spring.ai.mcp.server.protocol=STREAMABLE
 # spring.ai.mcp.server.protocol=STATELESS
 ```
 
-### Client Configuration (`application.properties`)
+### 客户端配置 (`application.properties`)
 
 ```properties
 spring.application.name=mcp
 spring.main.web-application-type=none
 
-# MCP client connection
+# MCP 客户端连接
 spring.ai.mcp.client.sse.connections.server1.url=http://localhost:8080
 
-# Logging configuration
+# 日志记录配置
 logging.level.io.modelcontextprotocol.client=WARN
 logging.level.io.modelcontextprotocol.spec=WARN
 ```
 
-## Testing the Server
+## 测试服务器
 
-You can test the server using the included test clients:
+您可以使用包含的测试客户端测试服务器:
 
-### SSE Client Test
+### SSE 客户端测试
 ```java
-// Located in src/test/java/.../client/ClientSse.java
+// 位于 src/test/java/.../client/ClientSse.java
 var transport = HttpClientSseClientTransport.builder("http://localhost:8080").build();
 var client = McpClient.sync(transport).build();
 ```
 
-### STDIO Client Test
+### STDIO 客户端测试
 ```java
-// Located in src/test/java/.../client/ClientStdio.java
+// 位于 src/test/java/.../client/ClientStdio.java
 var stdioParams = ServerParameters.builder("java")
     .args("-jar", "target/mcp-annotations-server-0.0.1-SNAPSHOT.jar")
     .build();
@@ -380,48 +380,48 @@ var transport = new StdioClientTransport(stdioParams);
 var client = McpClient.sync(transport).build();
 ```
 
-## Advanced Features
+## 高级功能
 
-### Mixed Annotation Styles
-The server demonstrates both MCP-specific annotations (`@McpTool`) and Spring AI annotations (`@Tool`), showing how they can coexist in the same application.
+### 混合注解样式
+服务器演示了 MCP 特定注解 (`@McpTool`) 和 Spring AI 注解 (`@Tool`),展示了它们如何在同一应用程序中共存。
 
-### URI Template Variables
-Resources support complex URI templates with multiple variables that are automatically extracted and passed as method parameters.
+### URI 模板变量
+资源支持具有多个变量的复杂 URI 模板,这些变量会自动提取并作为方法参数传递。
 
-### Return Type Flexibility
-Methods can return various types:
-- `ReadResourceResult` for complete control
-- `List<ResourceContents>` for multiple content items
-- `ResourceContents` for single content items
-- `String` for simple text responses
-- `List<String>` for multiple text items
+### 返回类型灵活性
+方法可以返回各种类型:
+- `ReadResourceResult` 用于完全控制
+- `List<ResourceContents>` 用于多个内容项
+- `ResourceContents` 用于单个内容项
+- `String` 用于简单文本响应
+- `List<String>` 用于多个文本项
 
-### Custom MIME Types
-Resources can specify custom MIME types for different content types, including binary data handling.
+### 自定义 MIME 类型
+资源可以为不同的内容类型指定自定义 MIME 类型,包括二进制数据处理。
 
-### Server Exchange Integration
-Methods can access `McpSyncServerExchange` for advanced server operations like logging notifications and progress tracking.
+### 服务器交换集成
+方法可以访问 `McpSyncServerExchange` 以进行高级服务器操作,如日志通知和进度跟踪。
 
-## Sample Data
+## 示例数据
 
-The server includes sample user profiles for testing:
-- **john**: John Smith (New York, age 32)
-- **jane**: Jane Doe (London, age 28)
-- **bob**: Bob Johnson (Tokyo, age 45)
-- **alice**: Alice Brown (Sydney, age 36)
+服务器包括用于测试的示例用户配置文件:
+- **john**: John Smith (纽约,年龄 32)
+- **jane**: Jane Doe (伦敦,年龄 28)
+- **bob**: Bob Johnson (东京,年龄 45)
+- **alice**: Alice Brown (悉尼,年龄 36)
 
-## Related Projects
+## 相关项目
 
-- **[Sampling Examples](../sampling)**: MCP Sampling with multiple LLM providers
-- **[Weather Server](../weather)**: Simple weather MCP server
-- **[SQLite Server](../sqlite)**: Database access MCP server
-- **[Filesystem Server](../filesystem)**: File system operations MCP server
+- **[采样示例](../sampling)**: 带有多个 LLM 提供者的 MCP 采样
+- **[天气服务器](../weather)**: 简单的天气 MCP 服务器
+- **[SQLite 服务器](../sqlite)**: 数据库访问 MCP 服务器
+- **[文件系统服务器](../filesystem)**: 文件系统操作 MCP 服务器
 
-## Additional Resources
+## 其他资源
 
-* [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
+* [Spring AI 文档](https://docs.spring.io/spring-ai/reference/)
 * [Spring AI MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html)
 * [Spring AI MCP Client Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
-* [Spring AI Annotations](https://docs.spring.io/spring-ai/reference/1.1-SNAPSHOT/api/mcp/mcp-annotations-overview.html)
-* [Java MCP Annotations](https://github.com/spring-ai-community/mcp-annotations)
-* [Model Context Protocol Specification](https://modelcontextprotocol.github.io/specification/)
+* [Spring AI 注解](https://docs.spring.io/spring-ai/reference/1.1-SNAPSHOT/api/mcp/mcp-annotations-overview.html)
+* [Java MCP 注解](https://github.com/spring-ai-community/mcp-annotations)
+* [Model Context Protocol 规范](https://modelcontextprotocol.github.io/specification/)

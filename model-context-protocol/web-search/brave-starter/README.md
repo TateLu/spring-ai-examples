@@ -1,12 +1,12 @@
-# Spring AI - Model Context Protocol (MCP) Brave Search Example
+# Spring AI - 模型上下文协议（MCP）Brave 搜索示例
 
-This example demonstrates how to use the Spring AI Model Context Protocol (MCP) with the [Brave Search MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search) using Spring Boot's auto-configuration capabilities. The application enables natural language interactions with Brave Search, allowing you to perform internet searches through a conversational interface. When run, the application demonstrates the MCP client's capabilities by asking a specific question: "Does Spring AI supports the Model Context Protocol? Please provide some references." The MCP client uses Brave Search to find relevant information and returns a comprehensive answer. After providing the response, the application exits.
+此示例演示如何将 Spring AI 的模型上下文协议（MCP）与 [Brave 搜索 MCP 服务器](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search) 一起使用，利用 Spring Boot 的自动配置功能。该应用程序实现与 Brave 搜索的自然语言交互，允许通过对话界面进行互联网搜索。运行时，应用程序通过询问一个特定问题来演示 MCP 客户端的功能："Does Spring AI supports the Model Context Protocol? Please provide some references." MCP 客户端使用 Brave 搜索查找相关信息并返回全面的答案。提供响应后，应用程序退出。
 
-Unlike the manual configuration approach, this example uses the Spring Boot starter which automatically creates the MCP client for you, moving the configuration into `application.properties` and `mcp-servers-config.json`.
+与手动配置方法不同，此示例使用 Spring Boot starter，它会自动为您创建 MCP 客户端，将配置移至 `application.properties` 和 `mcp-servers-config.json`。
 
-## Dependencies
+## 依赖项
 
-The project uses the following key dependencies:
+项目使用以下关键依赖项：
 
 ```xml
 <dependency>
@@ -22,56 +22,56 @@ The project uses the following key dependencies:
 
 <img src="spring-ai-mcp-brave.jpg" width="600"/>
 
-## Prerequisites
+## 前置条件
 
-- Java 17 or higher
+- Java 17 或更高版本
 - Maven 3.6+
-- npx package manager
-- Anthropic API key
-- Brave Search API key (Get one at https://brave.com/search/api/)
+- npx 包管理器
+- Anthropic API 密钥
+- Brave 搜索 API 密钥（在 https://brave.com/search/api/ 获取）
 
-## Setup
+## 设置
 
-1. Install npx (Node Package eXecute):
-   First, make sure to install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-   and then run:
+1. 安装 npx（Node Package eXecute）：
+   首先，确保安装 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+   然后运行：
    ```bash
    npm install -g npx
    ```
 
-2. Clone the repository:
+2. 克隆仓库：
    ```bash
    git clone https://github.com/spring-projects/spring-ai-examples.git
    cd model-context-protocol/brave-starter
    ```
 
-3. Set up your API keys:
+3. 设置您的 API 密钥：
    ```bash
    export ANTHROPIC_API_KEY='your-anthropic-api-key-here'
    export BRAVE_API_KEY='your-brave-api-key-here'
    ```
 
-4. Build the application:
+4. 构建应用程序：
    ```bash
    ./mvnw clean install
    ```
 
-## Running the Application
+## 运行应用程序
 
-Run the application using Maven:
+使用 Maven 运行应用程序：
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The application will demonstrate the integration by asking a sample question about Spring AI and Model Context Protocol, utilizing Brave Search to gather information.
+应用程序将通过询问一个关于 Spring AI 和模型上下文协议的示例问题来演示集成，利用 Brave 搜索收集信息。
 
-## How it Works
+## 工作原理
 
-The application uses Spring Boot's auto-configuration capabilities to set up the MCP client. The configuration is primarily done through two files:
+应用程序使用 Spring Boot 的自动配置功能来设置 MCP 客户端。配置主要通过两个文件完成：
 
-### Project Dependencies
+### 项目依赖项
 
-The project uses Spring AI's MCP client Spring Boot starter and Anthropic starter:
+项目使用 Spring AI 的 MCP 客户端 Spring Boot starter 和 Anthropic starter：
 
 ```xml
 <dependency>
@@ -85,43 +85,43 @@ The project uses Spring AI's MCP client Spring Boot starter and Anthropic starte
 </dependency>
 ```
 
-### Configuration Files
+### 配置文件
 
-The MCP client can be configured in two different ways, both achieving the same behavior:
+MCP 客户端可以通过两种不同的方式进行配置，两者都能实现相同的行为：
 
-#### Option 1: Direct Configuration in application.properties
+#### 选项 1：直接在 application.properties 中配置
 
-This approach configures the MCP client directly in the application.properties file:
+此方法直接在 application.properties 文件中配置 MCP 客户端：
 
 ```properties
 spring.application.name=mcp
 spring.main.web-application-type=none
 spring.ai.anthropic.api-key=${ANTHROPIC_API_KEY}
 
-# Direct MCP client configuration
+# 直接 MCP 客户端配置
 spring.ai.mcp.client.stdio.connections.brave-search.command=npx
 spring.ai.mcp.client.stdio.connections.brave-search.args=-y,@modelcontextprotocol/server-brave-search
 ```
 
-#### Option 2: External Configuration File
+#### 选项 2：外部配置文件
 
-Alternatively, you can move the MCP configuration to an external file. This approach is similar to how the anthropic standalone client is configured.
+或者，您可以将 MCP 配置移至外部文件。此方法类似于 anthropic 独立客户端的配置方式。
 
-1. In `application.properties`, enable the external configuration and comment out the direct configuration:
+1. 在 `application.properties` 中，启用外部配置并注释掉直接配置：
 ```properties
 spring.application.name=mcp
 spring.main.web-application-type=none
 spring.ai.anthropic.api-key=${ANTHROPIC_API_KEY}
 
-# Use external configuration file
+# 使用外部配置文件
 spring.ai.mcp.client.stdio.servers-configuration=classpath:/mcp-servers-config.json
 
-# Comment out direct configuration when using external file
+# 使用外部文件时注释掉直接配置
 # spring.ai.mcp.client.stdio.connections.brave-search.command=npx
 # spring.ai.mcp.client.stdio.connections.brave-search.args=-y,@modelcontextprotocol/server-brave-search
 ```
 
-2. In `mcp-servers-config.json` - Define the MCP server configuration:
+2. 在 `mcp-servers-config.json` 中 - 定义 MCP 服务器配置：
 ```json
 {
   "mcpServers": {
@@ -137,15 +137,15 @@ spring.ai.mcp.client.stdio.servers-configuration=classpath:/mcp-servers-config.j
 }
 ```
 
-### Application Code
+### 应用程序代码
 
-The main application (`Application.java`) uses the auto-configured components to create a chat client and execute a single question:
+主应用程序（`Application.java`）使用自动配置的组件创建聊天客户端并执行单个问题：
 
 ```java
 @SpringBootApplication
 public class Application {
     @Bean
-    public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder, 
+    public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder,
             List<ToolCallback> tools, ConfigurableApplicationContext context) {
         return args -> {
             var chatClient = chatClientBuilder
@@ -162,15 +162,15 @@ public class Application {
 }
 ```
 
-The application uses Spring Boot's auto-configuration to automatically create and configure the MCP client based on the properties and configuration files, without requiring explicit bean definitions for the client itself.
+应用程序使用 Spring Boot 的自动配置根据属性和配置文件自动创建和配置 MCP 客户端，无需为客户端本身显式定义 bean。
 
 
-# MCP Configuration
+# MCP 配置
 spring.ai.mcp.client.stdio.enabled=true
 spring.ai.mcp.client.stdio.servers-configuration=classpath:/mcp-servers-config.json
 ```
 
-2. `mcp-servers-config.json` - MCP server configuration:
+2. `mcp-servers-config.json` - MCP 服务器配置：
 ```json
 {
   "mcpServers": {
@@ -187,29 +187,29 @@ spring.ai.mcp.client.stdio.servers-configuration=classpath:/mcp-servers-config.j
 }
 ```
 
-### Auto-Configuration
+### 自动配置
 
-Spring Boot's auto-configuration handles the setup:
-- Configures the application as a command-line tool (non-web)
-- Sets up the Anthropic integration using the provided API key
-- Enables the MCP STDIO client for communication with the Brave Search server
-- Provides a `List<ToolCallback>` bean containing the Brave Search capabilities, which is automatically injected into the `CommandLineRunner`
+Spring Boot 的自动配置处理设置：
+- 将应用程序配置为命令行工具（非 Web）
+- 使用提供的 API 密钥设置 Anthropic 集成
+- 启用 MCP STDIO 客户端与 Brave 搜索服务器通信
+- 提供包含 Brave 搜索功能的 `List<ToolCallback>` bean，该 bean 会自动注入到 `CommandLineRunner` 中
 
-### Main Application
+### 主应用程序
 
-The `Application.java` file demonstrates a simple Spring Boot application that:
+`Application.java` 文件演示了一个简单的 Spring Boot 应用程序，它：
 
-1. Uses Spring Boot's `CommandLineRunner` to execute a predefined question when the application starts
-2. Creates a `ChatClient` with the automatically configured MCP tools (Brave Search capabilities)
-3. Asks a specific question about Spring AI and Model Context Protocol
-4. Prints both the question and the AI assistant's response to the console
-5. Automatically closes the application after receiving the response
+1. 使用 Spring Boot 的 `CommandLineRunner` 在应用程序启动时执行预定义问题
+2. 创建一个具有自动配置的 MCP 工具（Brave 搜索功能）的 `ChatClient`
+3. 询问一个关于 Spring AI 和模型上下文协议的特定问题
+4. 将问题和 AI 助手的响应都打印到控制台
+5. 收到响应后自动关闭应用程序
 
-Here's the key code from `Application.java`:
+以下是 `Application.java` 中的关键代码：
 
 ```java
 @Bean
-public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder, 
+public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder,
         List<ToolCallback> tools, ConfigurableApplicationContext context) {
     return args -> {
         var chatClient = chatClientBuilder
@@ -227,13 +227,13 @@ public CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilde
 }
 ```
 
-The application automatically:
-- Injects the `ChatClient.Builder` and `ToolCallback` list (containing Brave Search capabilities)
-- Configures the chat client with the available tools
-- Executes a predefined question
-- Uses Brave Search when needed to gather information for the response
+应用程序自动：
+- 注入 `ChatClient.Builder` 和 `ToolCallback` 列表（包含 Brave 搜索功能）
+- 使用可用工具配置聊天客户端
+- 执行预定义问题
+- 在需要时使用 Brave 搜索收集信息以提供响应
 
-This setup allows the AI model to do the following:
-- Understand when to use Brave Search
-- Format queries appropriately
-- Process and incorporate search results into responses
+此设置使 AI 模型能够：
+- 理解何时使用 Brave 搜索
+- 适当地格式化查询
+- 处理并将搜索结果纳入响应

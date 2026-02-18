@@ -1,46 +1,46 @@
 # Prompt Chaining Workflow Example
 
-This project demonstrates the Prompt Chaining workflow pattern for Large Language Models (LLMs) using Spring AI. The pattern decomposes complex tasks into a sequence of steps, where each LLM call processes the output of the previous one.
+此项目演示了使用 Spring AI 的大语言模型（LLM）的 Prompt Chaining 工作流模式。该模式将复杂任务分解为一系列步骤，其中每个 LLM 调用都处理前一个调用的输出。
 
 ![Prompt Chaining Workflow](https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F7418719e3dab222dccb379b8879e1dc08ad34c78-2401x1000.png&w=3840&q=75)
 
-## Overview
+## 概述
 
-The prompt chaining pattern is particularly useful when:
-- Complex tasks can be broken down into simpler, sequential steps
-- Each step's output needs to be validated or transformed
-- The process requires maintaining a clear chain of transformations
+Prompt Chaining 模式在以下情况下特别有用：
+- 复杂任务可以分解为更简单的、顺序的步骤
+- 每个步骤的输出都需要验证或转换
+- 过程需要维护清晰的转换链
 
-This implementation shows a four-step workflow for processing numerical data in text:
-1. Extract numerical values and metrics
-2. Standardize to percentage format
-3. Sort in descending order
-4. Format as markdown table
+此实现展示了一个用于处理文本中数值数据的四步工作流：
+1. 提取数值和指标
+2. 标准化为百分比格式
+3. 按降序排序
+4. 格式化为 markdown 表格
 
-## Technical Requirements
+## 技术要求
 
-- Java 17 or higher
+- Java 17 或更高版本
 - Spring Boot 4.0.0
 - Spring AI 2.0.0-SNAPSHOT
-- Ollama (for LLM integration)
+- Ollama（用于 LLM 集成）
 
-## Getting Started
+## 快速开始
 
-1. Install and start Ollama following the instructions at [ollama.ai](https://ollama.ai)
+1. 按照 [ollama.ai](https://ollama.ai) 的说明安装并启动 Ollama
 
-2. Build the project:
+2. 构建项目：
    ```bash
    ./mvnw clean install
    ```
 
-3. Run the application:
+3. 运行应用程序：
    ```bash
    ./mvnw spring-boot:run
    ```
 
-## Example Usage
+## 使用示例
 
-The example processes a Q3 performance report through the chain of prompts. Here's the sample input:
+该示例通过一系列提示处理 Q3 性能报告。以下是示例输入：
 
 ```text
 Q3 Performance Summary:
@@ -54,9 +54,9 @@ Employee satisfaction is at 87 points.
 Operating margin improved to 34%.
 ```
 
-The workflow processes this through four steps:
+该工作流通过四个步骤处理：
 
-1. **Extract Values**: Pulls out numerical values and their metrics
+1. **提取值**：提取数值和指标
    ```
    92: customer satisfaction
    45%: revenue growth
@@ -68,7 +68,7 @@ The workflow processes this through four steps:
    34%: operating margin
    ```
 
-2. **Standardize Format**: Converts values to percentages where applicable
+2. **标准化格式**：将值转换为百分比（如适用）
    ```
    92%: customer satisfaction
    45%: revenue growth
@@ -79,7 +79,7 @@ The workflow processes this through four steps:
    34%: operating margin
    ```
 
-3. **Sort**: Orders values in descending order
+3. **排序**：按降序排列值
    ```
    92%: customer satisfaction
    87%: employee satisfaction
@@ -90,7 +90,7 @@ The workflow processes this through four steps:
    5%: customer churn
    ```
 
-4. **Format**: Creates a markdown table
+4. **格式化**：创建 markdown 表格
    ```markdown
    | Metric | Value |
    |:--|--:|
@@ -103,22 +103,22 @@ The workflow processes this through four steps:
    | Customer Churn | 5% |
    ```
 
-## Implementation Details
+## 实现细节
 
-The workflow is implemented in two main classes:
+该工作流在两个主要类中实现：
 
-1. `ChainWorkflow.java`: Contains the core logic for the prompt chaining pattern, including:
-   - System prompts for each transformation step
-   - Chain execution logic
-   - Gate validation between steps
+1. `ChainWorkflow.java`：包含 prompt chaining 模式的核心逻辑，包括：
+   - 每个转换步骤的系统提示
+   - 链执行逻辑
+   - 步骤之间的门验证
 
-2. `Application.java`: Provides the Spring Boot setup and example usage:
-   - Sample input data
-   - Spring AI configuration
-   - Command-line runner for demonstration
+2. `Application.java`：提供 Spring Boot 设置和示例用法：
+   - 示例输入数据
+   - Spring AI 配置
+   - 用于演示的命令行运行器
 
-Each step in the chain acts as a gate that validates and transforms the output before proceeding to the next step, ensuring the process stays on track.
+链中的每个步骤都充当一个门，在进入下一步之前验证和转换输出，确保过程保持正轨。
 
-## References
+## 参考
 
-This implementation is based on the prompt chaining pattern described in Anthropic's research paper [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents).
+此实现基于 Anthropic 的研究论文 [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) 中描述的 prompt chaining 模式。

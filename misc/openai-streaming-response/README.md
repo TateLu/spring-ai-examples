@@ -1,70 +1,71 @@
-# Spring Boot OpenAI Streaming Integration
+# Spring Boot OpenAI 流式集成
 
-This Spring Boot application demonstrates real-time streaming integration with OpenAI's API using Spring AI. It provides a simple endpoint that streams AI responses using Spring WebFlux.
+此 Spring Boot 应用程序演示了使用 Spring AI 与 OpenAI API 的实时流式集成。它提供了一个使用 Spring WebFlux 流式传输 AI 响应的简单端点。
 
-## Prerequisites
+## 前置条件
 
-- Java 17 or higher
+- Java 17 或更高版本
 - Maven
-- OpenAI API key
+- OpenAI API 密钥
 
-All necessary dependencies including Spring Boot starters for web, webflux, and OpenAI are declared in the Maven pom.xml.
+所有必需的依赖项,包括 web、webflux 和 OpenAI 的 Spring Boot 启动器,都在 Maven pom.xml 中声明。
 
-## Configuration
+## 配置
 
-1. Create an `application.properties` or `application.yml` file in `src/main/resources`
-2. Add your OpenAI API key:
+1. 在 `src/main/resources` 中创建 `application.properties` 或 `application.yml` 文件
+2. 添加您的 OpenAI API 密钥:
 
 ```properties
 spring.ai.openai.api-key=your-api-key-here
 ```
 
-## Running the Application
+## 运行应用程序
 
-1. Clone this repository
-2. Configure your OpenAI API key as described above
-3. Run the application:
+1. 克隆此仓库
+2. 如上所述配置您的 OpenAI API 密钥
+3. 运行应用程序:
+
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The application will start on port 8080 by default.
+应用程序默认将在端口 8080 上启动。
 
-## Usage
+## 使用
 
-The application exposes a streaming endpoint that returns OpenAI responses as a reactive stream.
+应用程序公开了一个流式端点,将 OpenAI 响应作为响应式流返回。
 
-### Endpoint
+### 端点
 
 ```
 GET /ai/generateStream
 ```
 
-#### Parameters
-- `message` (optional): The input message to send to OpenAI
-    - Default value: "Tell me a joke"
+#### 参数
+- `message` (可选): 发送到 OpenAI 的输入消息
+    - 默认值: "Tell me a joke"
 
-#### Testing with curl
+#### 使用 curl 测试
 
-You can test the streaming endpoint using curl. The following command will stream the response and format it using `jq`:
+您可以使用 curl 测试流式端点。以下命令将流式传输响应并使用 `jq` 进行格式化:
 
 ```bash
 curl localhost:8080/ai/generateStream | sed 's/data://' | jq .
 ```
 
-## Implementation Details
+## 实现细节
 
-The application uses:
-- Spring WebFlux for reactive streaming
-- Spring AI's OpenAI integration for AI model interaction
+应用程序使用:
+- Spring WebFlux 用于响应式流式传输
+- Spring AI 的 OpenAI 集成用于 AI 模型交互
 
-The main components are:
-1. `OpenAiStreamingApplication`: The Spring Boot application entry point
-2. `ChatController`: REST controller handling the streaming endpoint
+主要组件:
+1. `OpenAiStreamingApplication`: Spring Boot 应用程序入口点
+2. `ChatController`: 处理流式端点的 REST 控制器
 
-### Code Details
+### 代码详情
 
-The streaming endpoint is implemented as follows:
+流式端点实现如下:
 
 ```java
 @GetMapping(value = "/generateStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -74,15 +75,15 @@ public Flux<ChatResponse> generateStream(
 }
 ```
 
-Key points:
-- The endpoint uses `MediaType.TEXT_EVENT_STREAM_VALUE` to indicate that the response will be streamed as text events. 
-- Returns a `Flux<ChatResponse>` which is Spring WebFlux's reactive type for handling a stream of multiple elements.
-- Takes an optional `message` parameter with a default value of "Tell me a joke".
-- Uses Spring AI's `chatModel.stream()` method which returns a reactive stream of responses from OpenAI.
-- The `Prompt` and `UserMessage` classes are provided by Spring AI to structure the request to OpenAI.
+关键点:
+- 端点使用 `MediaType.TEXT_EVENT_STREAM_VALUE` 指示响应将作为文本事件流式传输。
+- 返回一个 `Flux<ChatResponse>`,这是 Spring WebFlux 用于处理多个元素流的响应式类型。
+- 接受一个可选的 `message` 参数,默认值为 "Tell me a joke"。
+- 使用 Spring AI 的 `chatModel.stream()` 方法,该方法返回来自 OpenAI 的响应流。
+- `Prompt` 和 `UserMessage` 类由 Spring AI 提供,用于构建对 OpenAI 的请求。
 
-When called, this endpoint:
-1. Takes the user's input message (or uses the default)
-2. Wraps it in a Spring AI `Prompt` object
-3. Streams the AI's response back to the client in real-time
-4. Each response chunk is automatically serialized to JSON
+调用时,此端点:
+1. 接受用户的输入消息(或使用默认值)
+2. 将其包装在 Spring AI `Prompt` 对象中
+3. 实时将 AI 的响应流式传输回客户端
+4. 每个响应块自动序列化为 JSON

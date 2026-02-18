@@ -1,73 +1,73 @@
 # Recursive Advisor with Memory and Tool Argument Augmentation
 
-This example demonstrates how to build **explainable AI agents** using Spring AI by capturing LLM reasoning during tool calls and integrating with chat memory for enhanced context across conversations.
+此示例演示如何使用 Spring AI 构建 **可解释的 AI 智能体**，通过在工具调用期间捕获 LLM 推理并与聊天记忆集成，以增强跨对话的上下文。
 
-## Overview
+## 概述
 
-When building AI agents with tool calling capabilities, understanding **why** an LLM chose a particular tool is crucial for debugging, observability, and building trustworthy AI systems. This demo showcases the Spring AI [Tool Argument Augmenter](https://docs.spring.io/spring-ai/reference/2.0-SNAPSHOT/api/tools.html#tool-argument-augmentation) utilities which enables:
+在构建具有工具调用功能的 AI 智能体时，理解 **为什么** LLM 选择特定工具对于调试、可观察性和构建值得信赖的 AI 系统至关重要。此演示展示了 Spring AI [Tool Argument Augmenter](https://docs.spring.io/spring-ai/reference/2.0-SNAPSHOT/api/tools.html#tool-argument-augmentation) 工具，它实现：
 
-- **Capturing LLM Reasoning**: Extract inner thoughts, confidence levels, and memory notes during tool execution
-- **Transparent Schema Augmentation**: Dynamically extend tool schemas without modifying underlying tool implementations
-- **Memory-Enhanced Reasoning**: Persist reasoning insights in conversation history for improved decision-making across extended interactions
+- **捕获 LLM 推理**：在工具执行期间提取内部思维、置信度水平和记忆笔记
+- **透明模式增强**：动态扩展工具模式，而无需修改底层工具实现
+- **记忆增强推理**：在对话历史中持久化推理洞察，以在扩展交互中改进决策
 
-## How It Works
+## 工作原理
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          Tool Argument Augmenter Flow                   │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  1. User asks: "What is current weather in Paris?"                      │
+│  1. 用户询问："巴黎现在的天气怎么样？"                      │
 │                         │                                               │
 │                         ▼                                               │
-│  2. Tool Definition Augmentation                                        │
-│     Original: { location: string }                                      │
-│     Augmented: { location: string, innerThought: string,                │
+│  2. 模式增强                                          │
+│     原始：{ location: string }                                      │
+│     增强：{ location: string, innerThought: string,                │
 │                  confidence: string, memoryNotes: string[] }            │
 │                         │                                               │
 │                         ▼                                               │
-│  3. LLM Response with Reasoning                                         │
+│  3. 带推理的 LLM 响应                                         │
 │     {                                                                   │
-│       "location": "Paris",                                              │
-│       "innerThought": "User wants weather info for Paris...",           │
+│       "location": "巴黎",                                              │
+│       "innerThought": "用户想要巴黎的天气信息...",           │
 │       "confidence": "high",                                             │
-│       "memoryNotes": ["User interested in Paris weather"]               │
+│       "memoryNotes": ["用户对巴黎天气感兴趣"]               │
 │     }                                                                   │
 │                         │                                               │
 │                         ▼                                               │
-│  4. Argument Consumer processes reasoning (logging, memory storage)     │
+│  4. 参数消费者处理推理（日志记录、记忆存储）     │
 │                         │                                               │
 │                         ▼                                               │
-│  5. Original tool receives only: { "location": "Paris" }                │
+│  5. 原始工具仅接收：{ "location": "巴黎" }                │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Key Components
+## 关键组件
 
-### AgentThinking Record
+### AgentThinking 记录
 
-Defines the additional arguments to capture from the LLM:
+定义要从 LLM 捕获的额外参数：
 
 ```java
 public record AgentThinking(
-    @ToolParam(description = "Your step-by-step reasoning for why you're calling this tool", 
-               required = true) 
+    @ToolParam(description = "您调用此工具的分步推理",
+               required = true)
     String innerThought,
-    
-    @ToolParam(description = "Confidence level (low, medium, high) in this tool choice", 
-               required = false) 
+
+    @ToolParam(description = "对此工具选择的置信度（低、中、高）",
+               required = false)
     String confidence,
-    
-    @ToolParam(description = "Key insights to remember for future interactions", 
-               required = true) 
+
+    @ToolParam(description = "需要为未来交互记住的关键洞察",
+               required = true)
     List<String> memoryNotes
 ) {}
 ```
 
 ### AugmentedToolCallbackProvider
 
-Wraps existing tools to transparently augment their schemas:
+包装现有工具以透明地增强其模式：
 
 ```java
 AugmentedToolCallbackProvider<AgentThinking> provider = AugmentedToolCallbackProvider
@@ -84,9 +84,9 @@ AugmentedToolCallbackProvider<AgentThinking> provider = AugmentedToolCallbackPro
     .build();
 ```
 
-### Integration with Advisors
+### 与顾问集成
 
-Combines tool augmentation with Spring AI's advisor chain:
+将工具增强与 Spring AI 的顾问链结合：
 
 ```java
 ChatClient chatClient = chatClientBuilder
@@ -99,56 +99,56 @@ ChatClient chatClient = chatClientBuilder
     .build();
 ```
 
-## Running the Example
+## 运行示例
 
-### Prerequisites
+### 前置条件
 
-- Java 17 or higher
-- OpenAI API key (or Anthropic API key)
+- Java 17 或更高版本
+- OpenAI API 密钥（或 Anthropic API 密钥）
 
-### Configuration
+### 配置
 
-Set your API key as an environment variable:
+将您的 API 密钥设置为环境变量：
 
 ```bash
 export OPENAI_API_KEY=your-api-key
-# or
+# 或
 export ANTHROPIC_API_KEY=your-api-key
 ```
 
-### Build and Run
+### 构建和运行
 
 ```bash
 cd advisors/recursive-advisor-with-memory
 ./mvnw spring-boot:run
 ```
 
-## Sample Output
+## 示例输出
 
-When running the example, you'll see the LLM's reasoning captured before each tool call:
+运行示例时，您将在每次工具调用之前看到捕获的 LLM 推理：
 
 ```
-LLM Reasoning: The user is asking about the current weather in Paris. I need to call the weather tool...
+LLM Reasoning: 用户询问巴黎的当前天气。我需要调用天气工具...
 Confidence: high
-Memory Notes: [User interested in Paris weather, May need follow-up about activities]
+Memory Notes: [用户对巴黎天气感兴趣, 可能需要后续关于活动的信息]
 Tool: weather
 
-REQUEST: [{"type":"USER","text":"What is current weather in Paris?"}]
+REQUEST: [{"type":"USER","text":"巴黎现在的天气怎么样？"}]
 
-RESPONSE: [{"output":{"text":"The current weather in Paris is sunny with a temperature of 25°C."}}]
+RESPONSE: [{"output":{"text":"巴黎的当前天气是晴朗的，温度为 25°C。"}}]
 ```
 
-## Use Cases
+## 用例
 
-- **Debugging**: Understand why your AI agent made specific tool choices
-- **Observability**: Log and monitor agent reasoning in production
-- **Memory Enhancement**: Store insights for improved context in future conversations
-- **Multi-Agent Coordination**: Pass coordination signals between agents
-- **Analytics**: Track tool usage patterns and decision quality
+- **调试**：理解您的 AI 智能体为何做出特定的工具选择
+- **可观察性**：在生产环境中记录和监控智能体推理
+- **记忆增强**：存储洞察以在未来的对话中改进上下文
+- **多智能体协调**：在智能体之间传递协调信号
+- **分析**：跟踪工具使用模式和决策质量
 
-## Resources
+## 资源
 
-- [Explainable AI Agents Blog Post](https://spring.io/blog/2025/12/21/explainable-ai-agents-capture-llm-tool-call-reasoning-with-spring-ai)
-- [Spring AI Tool Calling Documentation](https://docs.spring.io/spring-ai/reference/api/tools.html)
-- [Spring AI Advisors Guide](https://docs.spring.io/spring-ai/reference/api/advisors.html)
+- [可解释的 AI 智能体博客文章](https://spring.io/blog/2025/12/21/explainable-ai-agents-capture-llm-tool-call-reasoning-with-spring-ai)
+- [Spring AI 工具调用文档](https://docs.spring.io/spring-ai/reference/api/tools.html)
+- [Spring AI 顾问指南](https://docs.spring.io/spring-ai/reference/api/advisors.html)
 - [Tool Argument Augmenter](https://docs.spring.io/spring-ai/reference/2.0-SNAPSHOT/api/tools.html#tool-argument-augmentation)
